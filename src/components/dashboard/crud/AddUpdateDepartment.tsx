@@ -1,32 +1,67 @@
-import { Button, Input, Select, Textarea } from "@mantine/core";
+import { AuthAPi, getResError } from "@/utils/fetcher";
+import { Button, Input, Textarea } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import React from "react";
-import { BsFillCameraFill } from "react-icons/bs";
 
 const AddUpdateDepartment = () => {
   const [data, setData] = React.useState({
     name: "",
     description: "",
-    author: "",
   });
+  const [loading, setLoading] = React.useState(false);
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if(!data.name.trim() || !data.description.trim()) {
+      notifications.show({
+        title: "Add Department Failed",
+        message: "Please fill all required fields",
+        color: "red",
+        autoClose: 3000,
+      });
+      return;
+    }
+    setLoading(true);
+    console.log("data", data);
+    try {
+      const res = await AuthAPi.post("/department/create", data);
+      console.log(res);
+      if(res.data) {
+        notifications.show({
+          title: "Add Department Success",
+          message: "Add Department Success",
+          color: "green",
+          autoClose: 3000,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      notifications.show({
+        title: "Add Department Failed",
+        message: getResError(error),
+        color: "red",
+        autoClose: 3000,
+      });
+    }
+    setLoading(false);
+  }
+
   return (
-    <form className=" w-full flex-col flex gap-y-4 py-4 items-center">
+    <form onSubmit={onSubmit} className=" w-full flex-col flex gap-y-4 py-4 items-center">
       <div className="flex mt-5 w-full flex-col gap-y-4">
         <Input.Wrapper
           w={"100%"}
           label="Department Name"
           description="Department Name"
         >
-          <Input required placeholder="Name" p={2} variant="filled" size="md" />
+          <Input  onChange={(e) => setData((prev) => ({ ...prev, name: e.target.value }))}
+          required placeholder="Name" p={2} variant="filled" size="md" />
         </Input.Wrapper>
-        <Input.Wrapper
-          w={"100%"}
+        <Input.Wrapper w={"100%"}
           label="Department Description"
-          description="Department Description"
-        >
-          <Input required placeholder="Name" p={2} variant="filled" size="md" />
-        </Input.Wrapper>
-        <Input.Wrapper w={"100%"} label="Description" description="Your Description">
+          description="Department Description">
           <Textarea
+            onChange={(e) => setData((prev) => ({ ...prev, description: e.target.value }))}
             required
             placeholder="Email"
             p={2}
@@ -38,6 +73,8 @@ const AddUpdateDepartment = () => {
       <Button
         type="submit"
         radius="md"
+        loading={loading}
+        disabled={loading}
         w={"100%"}
         size="md"
         mt={8}

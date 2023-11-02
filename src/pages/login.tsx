@@ -29,10 +29,10 @@ export default function Login() {
         autoClose: 3000,
       });
       if (res.data) {
-        const user = res.data?.user;
-        localStorage.setItem("token", res.data?.token);
+        const user = res.data.data?.user;
+        localStorage.setItem("token", res.data.data?.accessToken);
         localStorage.setItem("user", JSON.stringify(user));
-        const nextUrl = user?.roles?.includes("ADMIN") ? "/dashboard" : "/account";
+        const nextUrl = user?.roles[0].roleName === "ADMIN" ? "/dashboard" : "/account";
         navigate(nextUrl);
       }
     } catch (error) {

@@ -1,3 +1,4 @@
+import AsyncSelect from "@/components/core/AsyncSelect";
 import { Button, Input, Select } from "@mantine/core";
 import React from "react";
 import { BsFillCameraFill } from "react-icons/bs";
@@ -68,10 +69,10 @@ const AddUpdateCustomer = () => {
           />
         </Input.Wrapper>
         <Input.Wrapper w={"100%"} label="Department" description="Department">
-          <Select
-            mt={6}
-            data={["MALE", "FEMALE"]}
+          <AsyncSelect
+            dataUrl="/department"
             onChange={(val) => {
+              console.log(val);
               if (!val) return;
               setData({ ...data, gender: val });
             }}
@@ -81,12 +82,13 @@ const AddUpdateCustomer = () => {
       <Button
         type="submit"
         radius="md"
-        w={'100%'}
+        w={"100%"}
         size="md"
         mt={8}
-        className=" w-full bg-primary text-white">
-            Add Customer
-        </Button>
+        className=" w-full bg-primary text-white"
+      >
+        Add Customer
+      </Button>
     </form>
   );
 };

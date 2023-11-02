@@ -1,5 +1,5 @@
 import { ApiResponse, IPaginatedQuery, IPagination } from '@/types/base.type';
-import { api, getResError } from '@/utils/fetcher';
+import { AuthAPi, api, getResError } from '@/utils/fetcher';
 import { notifications } from '@mantine/notifications';
 import { useEffect, useState } from 'react';
 
@@ -35,7 +35,7 @@ export default function useGet<T = any>(url: string, options?: Opts) {
     setError(null);
     console.log('useGet url', url);
     try {
-      const response = await api.get<ApiResponse<T>>(url);
+      const response = await AuthAPi.get<ApiResponse<T>>(url);
       setData(response.data?.data);
     } catch (error: any) {
       const err = getResError(error);
@@ -56,7 +56,7 @@ export default function useGet<T = any>(url: string, options?: Opts) {
     setLoading(true);
     setError(null);
     try {
-      const response = await api.get(pagination?.url ?? url, {
+      const response = await AuthAPi.get(pagination?.url ?? url, {
         params: paginateOpts,
       });
       console.log('getPaginated', response.data);

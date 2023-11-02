@@ -19,7 +19,7 @@ function App() {
   const AdminRoute = () => {
     const token = localStorage.getItem("token");
     const user = JSON.parse(localStorage.getItem("user") || "{}");
-    if (token && user.roles.includes("ADMIN")) {
+    if (token && user?.roles[0].roleName === "ADMIN") {
       return <Outlet />;
     }
     return <Navigate to="/"  />;

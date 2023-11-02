@@ -9,6 +9,6 @@ COPY . .
 
 ## EXPOSE [Port you mentioned in the vite.config file]
 
-EXPOSE 5173
+EXPOSE 5172
 
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "dev", "--host"]
