@@ -2,6 +2,7 @@
 import { LayoutGridIcon, LogOutIcon, MenuIcon, MenuSquareIcon, UserCircleIcon } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { FaFile, FaUsers } from 'react-icons/fa';
 
 const routes = [
    {
@@ -10,9 +11,19 @@ const routes = [
       path: '/dashboard',
    },
    {
+      icon: <FaUsers />,
+      name: 'Users',
+      path: '/users',
+   },
+   {
       icon: <MenuSquareIcon />,
-      name: 'Menu',
-      path: '/menu',
+      name: 'Departments',
+      path: '/departments',
+   },
+   {
+      icon: <FaFile />,
+      name: 'Documents',
+      path: '/documents',
    },
    {
       icon: <UserCircleIcon />,

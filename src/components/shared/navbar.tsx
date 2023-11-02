@@ -1,8 +1,7 @@
 'use client';
-import { BellIcon, SearchIcon, Settings } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthProvider';
-import { Link, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const NavBar = () => {
    const [title, setTitle] = useState('');
@@ -27,7 +26,7 @@ const NavBar = () => {
    }, [pathname]);
 
    return (
-      <div className=" sticky h-[80px] top-0 bg-accent z-10 w-full items-center flex p-5 pl-8 justify-between">
+      <div className=" sticky h-[80px] bg-[#FAFAFB]  top-0 bg-accent z-10 w-full items-center flex p-5 pl-8 justify-between">
          <h1 title={title} className=" capitalize font-semibold text-xl truncate">
             {title}
          </h1>

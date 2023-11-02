@@ -1,4 +1,5 @@
 import StatCard from "@/components/dashboard/StatCard";
+import ChartComp from "@/components/dashboard/chart";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import { User } from "lucide-react";
 import React from "react";
@@ -14,7 +15,7 @@ const DashboardIndex = () => {
 
   return (
     <DashboardLayout>
-      <div className=" p-3">
+      <div className=" p-3 flex flex-col w-full">
         <div className="md:flex  grid xs:grid-cols-2 items-center justify-between rounded-md gap-3">
             <StatCard title="Total Finance" value={finance} />
             <StatCard
@@ -27,6 +28,7 @@ const DashboardIndex = () => {
             <StatCard title="Avg Value" value={averageValue} />
             <StatCard title="Avg Value" value={averageValue} />
         </div>
+        <ChartComp />
       </div>
     </DashboardLayout>
   );
