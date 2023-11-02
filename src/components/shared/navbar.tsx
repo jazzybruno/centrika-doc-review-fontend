@@ -1,9 +1,13 @@
 'use client';
 import { useAuth } from '@/contexts/AuthProvider';
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
-const NavBar = () => {
+interface Props {
+   right?: React.ReactNode;
+}
+
+const NavBar: FC<Props> = ({right}) => {
    const [title, setTitle] = useState('');
    const [paths, setPaths] = useState<string[]>([]);
    const pathname = useLocation().pathname;
@@ -30,6 +34,7 @@ const NavBar = () => {
          <h1 title={title} className=" capitalize font-semibold text-xl truncate">
             {title}
          </h1>
+         {right}
       </div>
    );
 };

@@ -16,7 +16,7 @@ const DashboardIndex = () => {
   return (
     <DashboardLayout>
       <div className=" p-3 flex flex-col w-full">
-        <div className="md:flex  grid xs:grid-cols-2 items-center justify-between rounded-md gap-3">
+        <div className="md:flex md:px-16  grid xs:grid-cols-2 items-center justify-between rounded-md gap-3">
             <StatCard title="Total Finance" value={finance} />
             <StatCard
               title="Total Clients"

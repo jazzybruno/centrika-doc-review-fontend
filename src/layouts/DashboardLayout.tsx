@@ -3,15 +3,16 @@ import Sidebar from '@/components/shared/sidebar'
 import React, { FC } from 'react'
 
 interface Props {
-    children: React.ReactNode
+    children: React.ReactNode;
+    right?: React.ReactNode;
 }
 
-const DashboardLayout: FC<Props> = ({children}) => {
+const DashboardLayout: FC<Props> = ({children, right}) => {
   return (
     <div className=' w-full flex min-h-screen'>
-        <Sidebar />
+        <Sidebar  />
         <div className="flex w-full bg-[#FAFAFB] flex-col md:pl-[220px]">
-            <NavBar />
+            <NavBar right={right}/>
             {children}
         </div>
     </div>

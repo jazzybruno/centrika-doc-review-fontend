@@ -1,5 +1,5 @@
-'use client';
-import { Input, Pagination, Select } from '@mantine/core';
+"use client";
+import { Input, Pagination, Select } from "@mantine/core";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -12,9 +12,9 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from '@tanstack/react-table';
-import clsx from 'clsx';
-import * as React from 'react';
+} from "@tanstack/react-table";
+import clsx from "clsx";
+import * as React from "react";
 interface Props {
   data: any;
   columns: ColumnDef<any>[];
@@ -39,8 +39,11 @@ export function DataTable({
   renderCustomElement,
 }: Props) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
   const [{ pageIndex, pageSize }, setPagination] = React.useState({
     pageIndex: paginationProps?.paginateOpts.page ?? 0,
@@ -52,17 +55,19 @@ export function DataTable({
       pageIndex,
       pageSize,
     }),
-    [pageIndex, pageSize],
+    [pageIndex, pageSize]
   );
 
   const newColumns: ColumnDef<any>[] = [
     {
-      id: 'select',
+      id: "select",
       header: ({ table }) => (
         <input
           type="checkbox"
           checked={table.getIsAllPageRowsSelected()}
-          onChange={(value) => table.toggleAllPageRowsSelected(!!value.target.checked)}
+          onChange={(value) =>
+            table.toggleAllPageRowsSelected(!!value.target.checked)
+          }
           aria-label="Select all"
         />
       ),
@@ -82,8 +87,8 @@ export function DataTable({
     },
     // numbering column
     {
-      id: 'numbering',
-      header: '#',
+      id: "numbering",
+      header: "#",
       cell: ({ row }) => <div className="capitalize">{row.index + 1}</div>,
       enableSorting: false,
       enableHiding: false,
@@ -139,8 +144,12 @@ export function DataTable({
             <Input
               type="text"
               placeholder={`Search ${searchKey}...`}
-              value={(table?.getColumn(searchKey)?.getFilterValue() as string) ?? ''}
-              onChange={(event) => table?.getColumn(searchKey)?.setFilterValue(event.target.value)}
+              value={
+                (table?.getColumn(searchKey)?.getFilterValue() as string) ?? ""
+              }
+              onChange={(event) =>
+                table?.getColumn(searchKey)?.setFilterValue(event.target.value)
+              }
               className="lg:max-w-xs max-w-[16em] w-full rounded-md duration-300"
             />
           ) : null}
@@ -151,13 +160,19 @@ export function DataTable({
         <table style={{ minWidth: minW ?? 700 }} className=" w-full ">
           <thead className=" text-mainPurple">
             {table.getHeaderGroups().map((headerGroup) => (
-              <tr className=" bg-[#EDEEF3]" key={headerGroup.id}>
+              <tr className=" bg-transparent" key={headerGroup.id}>
                 {headerGroup.headers.map((header, i) => {
                   return (
-                    <td className="p-2 font-semibold py-3 whitespace-nowrap" key={header.id}>
+                    <td
+                      className="px-4 font-semibold p-3 whitespace-nowrap"
+                      key={header.id}
+                    >
                       {header.isPlaceholder
                         ? null
-                        : flexRender(header.column.columnDef.header, header.getContext())}
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                     </td>
                   );
                 })}
@@ -168,23 +183,27 @@ export function DataTable({
             {table?.getRowModel().rows?.length ? (
               table?.getRowModel().rows.map((row, i) => (
                 <tr
-                  className={`rounded-md overflow-hidden ${
-                    i % 2 !== 0 ? 'bg-[#4343430f]' : 'bg-[#43434308]'
-                  }  border-2 border-[#F7F8FD]`}
+                  className={`rounded-lg overflow-hidden bg-white border-8 border-[#FAFAFB]`}
                   key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
+                  style={{ boxShadow: "1px 17px 44px 0px #03022912" }}
+                  data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell, i) => (
                     <td
                       className={clsx(
-                        `p-2 py-3`,
-                        row.getIsSelected() ? 'bg-mainPurple text-white font-semibold' : '',
-                        i === 0 && 'rounded-l-xl',
-                        i === row.getVisibleCells().length - 1 && 'rounded-r-xl',
+                        `p-3`,
+                        row.getIsSelected()
+                          ? "bg-primary text-white font-semibold"
+                          : "",
+                        i === 0 && "rounded-l-xl",
+                        i === row.getVisibleCells().length - 1 && "rounded-r-xl"
                       )}
                       key={cell.id}
                     >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </td>
                   ))}
                 </tr>
@@ -201,14 +220,16 @@ export function DataTable({
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          {table?.getFilteredSelectedRowModel().rows.length} of{' '}
+          {table?.getFilteredSelectedRowModel().rows.length} of{" "}
           {table?.getFilteredRowModel().rows.length} row(s) selected.
         </div>
       </div>
       <div className="flex w-full justify-center">
         <Pagination
           total={
-            isPaginated ? paginationProps?.paginateOpts?.totalPages ?? 1 : table?.getPageCount()
+            isPaginated
+              ? paginationProps?.paginateOpts?.totalPages ?? 1
+              : table?.getPageCount()
           }
           onNextPage={() => {
             if (isPaginated) {
@@ -248,7 +269,10 @@ export function DataTable({
             {isPaginated
               ? (paginationProps?.paginateOpts.page ?? 0) + 1
               : table?.getState().pagination.pageIndex + 1}
-            of {isPaginated ? paginationProps?.paginateOpts.totalPages : table?.getPageCount()}
+            of{" "}
+            {isPaginated
+              ? paginationProps?.paginateOpts.totalPages
+              : table?.getPageCount()}
           </strong>
         </span>
         <div className="flex items-center gap-x-2">
@@ -265,7 +289,7 @@ export function DataTable({
             }
             onChange={(value) => {
               // remove 'show' from value and
-              const newValue = value?.replace('', '');
+              const newValue = value?.replace("", "");
               if (!newValue) return;
               if (isPaginated) {
                 paginationProps?.setPaginateOpts({
