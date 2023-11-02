@@ -1,10 +1,17 @@
 import illustration from "../assets/images/Illustration.png"
-import { useState } from "react"
+import React, { useState } from "react"
 import {AiFillEye, AiFillEyeInvisible} from 'react-icons/ai'
+import { useNavigate } from "react-router-dom"
 export default function Login (){
-
-
     const [showPassword, setShowPassword] = useState(false)
+
+    const navigate = useNavigate();
+    
+    const login = (e: React.ChangeEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        console.log("Login")
+        navigate("/dashboard")
+    }
 
     return(
         <main className="bg-foreground w-screen h-screen">
@@ -18,7 +25,7 @@ export default function Login (){
                     </header>
 
                     <div className="mt-12 scale-90">
-                        <form action="#" method="post">
+                        <form onSubmit={login}>
                             <div className="field flex flex-col gap-2 mt-6">
                                 <label htmlFor="email" className="text-md font-regular text-black-primary">Email Address</label>
                                 <input className="outline-none border-none text-black-primary h-[50px] bg-input text-sm px-4 boder border-transparent rounded-[10px] active:border-gray-600" type="text" name="" placeholder="example@gmail.com" id="email" />
