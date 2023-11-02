@@ -6,6 +6,12 @@ export const api = axios.create({
         "Content-Type": "application/json",
     },
 });
+export const AuthAPi = axios.create({
+    baseURL: import.meta.env.VITE_API_URL as string,
+    headers: {
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+    },
+});
 
 export const getResError = (error?: any) => {
     if (!error) return 'Something Went Wrong';
