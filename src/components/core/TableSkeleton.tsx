@@ -30,17 +30,17 @@ const TableSkeleton: FC<Props> = ({ columns }) => {
         {[...Array(10)].map((_, index) => (
           <tr key={index} className="">
             <td>
-              <Skeleton height={20} />
+              <Skeleton height={40} />
             </td>
             <td>
-              <Skeleton height={20} />
+              <Skeleton height={40} />
             </td>
             {columns.map((column, i) => (
               <td key={i} className="p-2">
-                <Skeleton height={20} />
+                <Skeleton height={40} />
               </td>
             ))}
-            <Skeleton height={20} />
+            <Skeleton height={40} />
           </tr>
         ))}
       </tbody>
