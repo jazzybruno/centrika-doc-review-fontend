@@ -1,6 +1,6 @@
 import { Skeleton } from '@mantine/core';
 import { ColumnDef } from '@tanstack/react-table';
-import React, { FC } from 'react';
+import { FC } from 'react';
 interface Props {
   columns: ColumnDef<any>[];
 }

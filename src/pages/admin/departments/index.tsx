@@ -13,7 +13,10 @@ import { FaEye } from "react-icons/fa";
 
 const Departments = () => {
   const [showDrawer, setShowDrawer] = React.useState(false);
-  const [viewDepartment, setViewDepartment] = React.useState(false);
+  const [viewDepartment, setViewDepartment] = React.useState({
+    open: false,
+    data: null as any,
+  });
   const {
     data: departments,
     loading,
@@ -44,11 +47,14 @@ const Departments = () => {
     {
       header: "Actions",
       accessorKey: "class",
-      cell: (row: any) => (
+      cell: (row) => (
         <div className="flex items-center gap-x-3">
           <ActionIcon
             variant="transparent"
-            onClick={() => setViewDepartment(true)}
+            onClick={() => setViewDepartment({
+              open: true,
+              data: row.row.original,
+            })}
           >
             <FaEye />
           </ActionIcon>
@@ -109,14 +115,17 @@ const Departments = () => {
         />
       </Drawer>
       <Drawer
-        opened={viewDepartment}
-        onClose={() => setViewDepartment(false)}
+        opened={viewDepartment.open}
+        onClose={() => setViewDepartment({
+          open: false,
+          data: null as any,
+        })}
         padding="md"
         size="md"
         position="right"
         title={<span className=" font-semibold"> {"Document Overview"}</span>}
       >
-        <ViewDepartment />
+        <ViewDepartment department={viewDepartment.data} />
       </Drawer>
     </DashboardLayout>
   );

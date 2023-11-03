@@ -1,20 +1,20 @@
+import { IDepartment } from "@/types/base.type";
 import { Divider } from "@mantine/core";
+import { FC } from "react";
 import { AiFillFilePdf } from "react-icons/ai";
 import { Link } from "react-router-dom";
 
-const ViewDepartment = () => {
+interface Props {
+    department: IDepartment | null;
+}
+
+const ViewDepartment: FC<Props> = ({department}) => {
   return (
     <div className="flex w-full flex-col gap-y-3">
-      <h1 className=" opacity-70 text-lg">Traffic Data</h1>
+      <h1 className=" opacity-70 text-lg">{department?.name}</h1>
       <Divider my={"md"} />
       <p>
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Impedit,
-        commodi. Quas dicta, aperiam corrupti quia sint iste ipsa dolore
-        perspiciatis molestias minus optio labore non exercitationem quo! Cum,
-        voluptas reiciendis! Lorem ipsum dolor sit, amet consectetur adipisicing
-        elit. Debitis odio accusamus eveniet rerum consequatur velit, nisi unde
-        voluptatum iste eius eum perspiciatis tenetur perferendis incidunt dicta
-        nesciunt repudiandae, esse possimus!
+        {department?.description}
       </p>
       <Divider my={"md"} />
       <div className="flex w-full gap-y-3 flex-col ">

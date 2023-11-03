@@ -45,8 +45,8 @@ const AsyncSelect: FC<Props> = ({
     <Select
       label={label}
       placeholder={placeholder}
-      variant="unstyled"
-      px={6}
+      // variant="unstyled"
+      mt={6}
       disabled={disabled}
       data={loading ? loadingData : selectedData}
       value={selected}
