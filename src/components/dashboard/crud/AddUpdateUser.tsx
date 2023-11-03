@@ -3,7 +3,7 @@ import { Button, Input, Select } from "@mantine/core";
 import React from "react";
 import { BsFillCameraFill } from "react-icons/bs";
 
-const AddUpdateCustomer = () => {
+const AddUpdateUser = () => {
   const [data, setData] = React.useState({
     firstName: "",
     lastName: "",
@@ -17,7 +17,7 @@ const AddUpdateCustomer = () => {
       <input type="file" id="photo" hidden />
       <label
         htmlFor="photo"
-        className=" w-32 aspect-square bg-foreground rounded-full flex justify-center items-center"
+        className=" cursor-pointer w-32 aspect-square bg-foreground rounded-full flex justify-center items-center"
       >
         <BsFillCameraFill size={25} />
       </label>
@@ -74,7 +74,7 @@ const AddUpdateCustomer = () => {
             onChange={(val) => {
               console.log(val);
               if (!val) return;
-              setData({ ...data, gender: val });
+              setData({ ...data, department: val });
             }}
           />
         </Input.Wrapper>
@@ -87,10 +87,10 @@ const AddUpdateCustomer = () => {
         mt={8}
         className=" w-full bg-primary text-white"
       >
-        Add Customer
+        Add User
       </Button>
     </form>
   );
 };
 
-export default AddUpdateCustomer;
+export default AddUpdateUser;

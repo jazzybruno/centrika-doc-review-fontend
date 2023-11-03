@@ -1,12 +1,15 @@
 import AddUpdateDocument from "@/components/dashboard/crud/AddUpdateDocument";
+import ViewDocument from "@/components/dashboard/crud/ViewDocument";
 import { DataTable } from "@/components/dashboard/data-table.tsx";
 import DashboardLayout from "@/layouts/DashboardLayout";
-import { Button, Drawer } from "@mantine/core";
+import { ActionIcon, Button, Drawer } from "@mantine/core";
 import { ColumnDef } from "@tanstack/react-table";
 import React from "react";
+import { FaEye } from "react-icons/fa";
 
 const UserDocuments = () => {
   const [showDrawer, setShowDrawer] = React.useState(false);
+  const [viewDoc, setViewDoc] = React.useState(false);
   const columns: ColumnDef<any>[] = [
     {
       header: "ID",
@@ -27,6 +30,17 @@ const UserDocuments = () => {
       header: "Edit Marks",
       accessorKey: "class",
       cell: (row: any) => <h6 className="">{row.getValue("class")}</h6>,
+    },
+    {
+      header: "Actions",
+      accessorKey: "class",
+      cell: (row: any) => (
+        <div className="flex items-center gap-x-3">
+          <ActionIcon variant="transparent" onClick={() => setViewDoc(true)}>
+            <FaEye />
+          </ActionIcon>
+        </div>
+      ),
     },
   ];
   const sampleData = [
@@ -66,6 +80,16 @@ const UserDocuments = () => {
         title={<span className=" font-semibold"> {"Add Document"}</span>}
       >
         <AddUpdateDocument />
+      </Drawer>
+      <Drawer
+        opened={viewDoc}
+        onClose={() => setViewDoc(false)}
+        padding="md"
+        size="md"
+        position="right"
+        title={<span className=" font-semibold"> {"Document Overview"}</span>}
+      >
+        <ViewDocument />
       </Drawer>
     </DashboardLayout>
   );

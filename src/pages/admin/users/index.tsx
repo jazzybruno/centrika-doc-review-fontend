@@ -1,12 +1,15 @@
-import AddUpdateCustomer from "@/components/dashboard/crud/AddUpdateCustomer";
+import AddUpdateUser from "@/components/dashboard/crud/AddUpdateUser";
+import ViewUser from "@/components/dashboard/crud/ViewUser";
 import { DataTable } from "@/components/dashboard/data-table.tsx";
 import DashboardLayout from "@/layouts/DashboardLayout";
-import { Button, Drawer } from "@mantine/core";
+import { ActionIcon, Button, Drawer } from "@mantine/core";
 import { ColumnDef } from "@tanstack/react-table";
 import React from "react";
+import { FaEye } from "react-icons/fa";
 
 const Users = () => {
   const [showDrawer, setShowDrawer] = React.useState(false);
+  const [viewUser, setViewUser] = React.useState(false);
   const columns: ColumnDef<any>[] = [
     {
       header: "ID",
@@ -27,6 +30,17 @@ const Users = () => {
       header: "Edit Marks",
       accessorKey: "class",
       cell: (row: any) => <h6 className="">{row.getValue("class")}</h6>,
+    },
+    {
+      header: "Actions",
+      accessorKey: "class",
+      cell: (row: any) => (
+        <div className="flex items-center gap-x-3">
+          <ActionIcon variant="transparent" onClick={() => setViewUser(true)}>
+            <FaEye />
+          </ActionIcon>
+        </div>
+      ),
     },
   ];
   const sampleData = [
@@ -50,7 +64,7 @@ const Users = () => {
           radius={"md"}
           className=" duration-300"
         >
-          + Add Customer
+          + Add User
         </Button>
       }
     >
@@ -63,9 +77,19 @@ const Users = () => {
         padding="md"
         size="md"
         position="right"
-        title={<span className=" font-semibold"> {"Add Customer"}</span>}
+        title={<span className=" font-semibold"> {"Add User"}</span>}
       >
-        <AddUpdateCustomer />
+        <AddUpdateUser />
+      </Drawer>
+      <Drawer
+        opened={viewUser}
+        onClose={() => setViewUser(false)}
+        padding="md"
+        size="md"
+        position="right"
+        title={<span className=" font-semibold"> </span>}
+      >
+        <ViewUser />
       </Drawer>
     </DashboardLayout>
   );

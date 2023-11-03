@@ -80,7 +80,7 @@ const AddUpdateDepartment = () => {
         mt={8}
         className=" w-full bg-primary text-white"
       >
-        Add Customer
+        Add User
       </Button>
     </form>
   );

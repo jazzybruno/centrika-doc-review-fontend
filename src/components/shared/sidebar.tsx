@@ -9,7 +9,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FaFile, FaUsers } from "react-icons/fa";
-import { Avatar } from "@mantine/core";
+import { ActionIcon, Avatar } from "@mantine/core";
 
 const routes = [
   {
@@ -60,6 +60,12 @@ const Sidebar = () => {
     window.addEventListener("resize", listener);
     return () => window.removeEventListener("resize", listener);
   }, []);
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    window.location.href = "/";
+  }
 
   return (
     <>
@@ -133,12 +139,12 @@ const Sidebar = () => {
                 </span>
               </div>
             </Link>
-            <Link
-              to={"/auth/login"}
+            <ActionIcon variant="transparent"
+              onClick={logout}
               className="flex py-2.5 hover:text-primary rounded-md duration-300 items-center gap-3 px-6 hover:bg-accent"
             >
               <LogOutIcon size={20} />
-            </Link>
+            </ActionIcon>
           </div>
         </div>
       </div>

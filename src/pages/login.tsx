@@ -2,7 +2,7 @@ import { Button } from "@mantine/core";
 import illustration from "../assets/images/Illustration.png";
 import React, { useState } from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { api, getResError } from "@/utils/fetcher";
 import { notifications } from "@mantine/notifications";
 export default function Login() {
@@ -46,6 +46,14 @@ export default function Login() {
     }
     setLoading(false);
   };
+  const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+    if (token && user?.roles[0].roleName === "ADMIN") {
+        return <Navigate to="/dashboard" />;
+    } else if (token) {
+        return <Navigate to="/account" />;
+    }
 
   return (
     <main className="bg-foreground w-screen h-screen">

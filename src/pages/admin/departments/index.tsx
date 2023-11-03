@@ -1,12 +1,15 @@
 import AddUpdateDepartment from "@/components/dashboard/crud/AddUpdateDepartment";
+import ViewDepartment from "@/components/dashboard/crud/ViewDepartment";
 import { DataTable } from "@/components/dashboard/data-table.tsx";
 import DashboardLayout from "@/layouts/DashboardLayout";
-import { Button, Drawer } from "@mantine/core";
+import { ActionIcon, Button, Drawer } from "@mantine/core";
 import { ColumnDef } from "@tanstack/react-table";
 import React from "react";
+import { FaEye } from "react-icons/fa";
 
 const Departments = () => {
   const [showDrawer, setShowDrawer] = React.useState(false);
+  const [viewDepartment, setViewDepartment] = React.useState(false);
   const columns: ColumnDef<any>[] = [
     {
       header: "ID",
@@ -27,6 +30,17 @@ const Departments = () => {
       header: "Edit Marks",
       accessorKey: "class",
       cell: (row: any) => <h6 className="">{row.getValue("class")}</h6>,
+    },
+    {
+      header: "Actions",
+      accessorKey: "class",
+      cell: (row: any) => (
+        <div className="flex items-center gap-x-3">
+          <ActionIcon variant="transparent" onClick={() => setViewDepartment(true)}>
+            <FaEye />
+          </ActionIcon>
+        </div>
+      ),
     },
   ];
   const sampleData = [
@@ -66,6 +80,16 @@ const Departments = () => {
         title={<span className=" font-semibold"> {"Add Department"}</span>}
       >
         <AddUpdateDepartment />
+      </Drawer>
+      <Drawer
+        opened={viewDepartment}
+        onClose={() => setViewDepartment(false)}
+        padding="md"
+        size="md"
+        position="right"
+        title={<span className=" font-semibold"> {"Document Overview"}</span>}
+      >
+        <ViewDepartment />
       </Drawer>
     </DashboardLayout>
   );

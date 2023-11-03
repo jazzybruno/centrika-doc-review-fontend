@@ -1,32 +1,42 @@
+import AsyncSelect from "@/components/core/AsyncSelect";
+import UploadArea from "@/components/core/UploadArea";
 import { Button, Input, Select } from "@mantine/core";
+import { PDF_MIME_TYPE } from "@mantine/dropzone";
 import React from "react";
-import { BsFillCameraFill } from "react-icons/bs";
 
 const AddUpdateDocument = () => {
   const [data, setData] = React.useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phoneNumber: "",
-    gender: "",
+    fileName: "",
+    referenceNumber: "",
+    receiverName: "",
     department: "",
   });
+  const [file, setFile] = React.useState<File | null>(null);
+
+  const handleFileChange = (files: File[]) => {
+    console.log(files);
+    setFile(files[0]);
+  };
+
   return (
     <form className=" w-full flex-col flex gap-y-4 py-4 items-center">
-      <input type="file" id="photo" hidden />
-      <label
-        htmlFor="photo"
-        className=" w-32 aspect-square bg-foreground rounded-full flex justify-center items-center"
+      <UploadArea
+        onDrop={handleFileChange}
+        accept={PDF_MIME_TYPE}
+        className=" h-32 flex items-center w-full justify-center bg-foreground"
       >
-        <BsFillCameraFill size={25} />
-      </label>
+        <div className="flex items-center gap-x-2 p-2 bg-white">
+          <span className=" text-center"> {file?.name ?? "Upload Document"}</span>
+        </div>
+      </UploadArea>
       <div className="flex mt-5 w-full flex-col gap-y-4">
         <Input.Wrapper
           w={"100%"}
-          label="Your First Name"
-          description="First Name"
+          label="Your File Name"
+          description="File Name"
         >
-          <Input required placeholder="Name" p={2} variant="filled" size="md" />
+          <Input 
+           required placeholder="Name" p={2} variant="filled" size="md" />
         </Input.Wrapper>
         <Input.Wrapper
           w={"100%"}
@@ -35,45 +45,32 @@ const AddUpdateDocument = () => {
         >
           <Input required placeholder="Name" p={2} variant="filled" size="md" />
         </Input.Wrapper>
-        <Input.Wrapper w={"100%"} label="Your Email" description="Email">
+        <Input.Wrapper w={"100%"} label="Reference Number " description="Reference Number">
           <Input
             required
-            placeholder="Email"
+            placeholder="Reference Number"
             p={2}
             variant="filled"
             size="md"
           />
         </Input.Wrapper>
-        <Input.Wrapper
-          w={"100%"}
-          label="Your Phone Number"
-          description="Phone Number"
-        >
-          <Input
-            required
-            placeholder="Phone Number"
-            p={2}
-            variant="filled"
-            size="md"
-          />
-        </Input.Wrapper>
-        <Input.Wrapper w={"100%"} label="Your Gender" description="Gender">
-          <Select
-            mt={6}
-            data={["MALE", "FEMALE"]}
+        <Input.Wrapper w={"100%"} label="Receiver Name" description="Receiver Name">
+          <AsyncSelect
+            dataUrl="/department"
             onChange={(val) => {
+              console.log(val);
               if (!val) return;
-              setData({ ...data, gender: val });
+              setData({ ...data, receiverName: val });
             }}
           />
         </Input.Wrapper>
         <Input.Wrapper w={"100%"} label="Department" description="Department">
-          <Select
-            mt={6}
-            data={["MALE", "FEMALE"]}
+          <AsyncSelect
+            dataUrl="/department"
             onChange={(val) => {
+              console.log(val);
               if (!val) return;
-              setData({ ...data, gender: val });
+              setData({ ...data, department: val });
             }}
           />
         </Input.Wrapper>
@@ -81,12 +78,13 @@ const AddUpdateDocument = () => {
       <Button
         type="submit"
         radius="md"
-        w={'100%'}
+        w={"100%"}
         size="md"
         mt={8}
-        className=" w-full bg-primary text-white">
-            Add Customer
-        </Button>
+        className=" w-full bg-primary text-white"
+      >
+        Upload Document
+      </Button>
     </form>
   );
 };
