@@ -1,3 +1,5 @@
+import { IUser } from "./user.type";
+
 export interface IModel {
     id: string;
     createdAt: Date | string;
@@ -48,3 +50,8 @@ export interface IModel {
     filter?: string;
   }
   
+  export interface IDepartment extends IModel {
+    name: string;
+    description: string;
+    createdBy: IUser;
+  }

@@ -160,7 +160,7 @@ export function DataTable({
         <table style={{ minWidth: minW ?? 700 }} className=" w-full ">
           <thead className=" text-mainPurple">
             {table.getHeaderGroups().map((headerGroup, i) => (
-              <tr className=" bg-transparent" key={`${headerGroup.id} ${i}`}>
+              <tr className=" bg-transparent h-20" key={`${headerGroup.id} ${i}`}>
                 {headerGroup.headers.map((header, i) => {
                   return (
                     <td
@@ -183,7 +183,7 @@ export function DataTable({
             {table?.getRowModel().rows?.length ? (
               table?.getRowModel().rows.map((row, i) => (
                 <tr
-                  className={`rounded-lg overflow-hidden bg-white border-8 border-[#FAFAFB]`}
+                  className={`rounded-lg h-20 overflow-hidden bg-white border-8 border-[#FAFAFB]`}
                   key={i}
                   style={{ boxShadow: "1px 17px 44px 0px #03022912" }}
                   data-state={row.getIsSelected() && "selected"}

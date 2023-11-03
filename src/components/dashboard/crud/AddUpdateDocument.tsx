@@ -25,9 +25,11 @@ const AddUpdateDocument = () => {
         accept={PDF_MIME_TYPE}
         className=" h-32 flex items-center w-full justify-center bg-foreground"
       >
-        <div className="flex items-center gap-x-2 p-2 bg-white">
-          <span className=" text-center"> {file?.name ?? "Upload Document"}</span>
-        </div>
+        {file ? (
+          <div className="flex items-center gap-x-2 p-2 bg-white">
+            <span className=" text-center"> {file?.name}</span>
+          </div>
+        ) : null}
       </UploadArea>
       <div className="flex mt-5 w-full flex-col gap-y-4">
         <Input.Wrapper
@@ -35,8 +37,7 @@ const AddUpdateDocument = () => {
           label="Your File Name"
           description="File Name"
         >
-          <Input 
-           required placeholder="Name" p={2} variant="filled" size="md" />
+          <Input required placeholder="Name" p={2} variant="filled" size="md" />
         </Input.Wrapper>
         <Input.Wrapper
           w={"100%"}
@@ -45,7 +46,11 @@ const AddUpdateDocument = () => {
         >
           <Input required placeholder="Name" p={2} variant="filled" size="md" />
         </Input.Wrapper>
-        <Input.Wrapper w={"100%"} label="Reference Number " description="Reference Number">
+        <Input.Wrapper
+          w={"100%"}
+          label="Reference Number "
+          description="Reference Number"
+        >
           <Input
             required
             placeholder="Reference Number"
@@ -54,9 +59,13 @@ const AddUpdateDocument = () => {
             size="md"
           />
         </Input.Wrapper>
-        <Input.Wrapper w={"100%"} label="Receiver Name" description="Receiver Name">
+        <Input.Wrapper
+          w={"100%"}
+          label="Receiver Name"
+          description="Receiver Name"
+        >
           <AsyncSelect
-            dataUrl="/department"
+            dataUrl="/department/all"
             onChange={(val) => {
               console.log(val);
               if (!val) return;
@@ -66,7 +75,7 @@ const AddUpdateDocument = () => {
         </Input.Wrapper>
         <Input.Wrapper w={"100%"} label="Department" description="Department">
           <AsyncSelect
-            dataUrl="/department"
+            dataUrl="/department/all"
             onChange={(val) => {
               console.log(val);
               if (!val) return;

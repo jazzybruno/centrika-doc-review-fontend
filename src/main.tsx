@@ -12,12 +12,12 @@ import { Notifications } from "@mantine/notifications";
 // import '@mantine/spotlight/styles.css';
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <AuthProvider>
       <AppProvider>
         <Notifications position="top-right" />
         <App />
       </AppProvider>
     </AuthProvider>
-  </React.StrictMode>
+  // </React.StrictMode>
 );

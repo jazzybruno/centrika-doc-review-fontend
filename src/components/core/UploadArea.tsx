@@ -27,7 +27,7 @@ export default function UploadArea(props: Partial<DropzoneProps> & Props) {
           {props.error ?? "Unsupported file type or size"}
         </div>
       </Dropzone.Reject>
-      {props.children ?? "Drop files here"}
+      {props.children}
     </Dropzone>
   );
 }

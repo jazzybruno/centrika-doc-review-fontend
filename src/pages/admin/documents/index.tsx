@@ -12,11 +12,6 @@ const Documents = () => {
   const [viewDoc, setViewDoc] = React.useState(false);
   const columns: ColumnDef<any>[] = [
     {
-      header: "ID",
-      accessorKey: "id",
-      cell: (row: any) => <h6 className="">{row.getValue("id")}</h6>,
-    },
-    {
       header: "Name",
       accessorKey: "name",
       cell: (row: any) => <h6 className="">{row.getValue("name")}</h6>,

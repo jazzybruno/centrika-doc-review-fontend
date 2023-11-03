@@ -1,21 +1,24 @@
+import TableSkeleton from "@/components/core/TableSkeleton";
 import AddUpdateDepartment from "@/components/dashboard/crud/AddUpdateDepartment";
 import ViewDepartment from "@/components/dashboard/crud/ViewDepartment";
 import { DataTable } from "@/components/dashboard/data-table.tsx";
+import useGet from "@/hooks/useGet";
 import DashboardLayout from "@/layouts/DashboardLayout";
+import { IDepartment } from "@/types/base.type";
 import { ActionIcon, Button, Drawer } from "@mantine/core";
 import { ColumnDef } from "@tanstack/react-table";
 import React from "react";
+import { AiOutlineReload } from "react-icons/ai";
 import { FaEye } from "react-icons/fa";
 
 const Departments = () => {
   const [showDrawer, setShowDrawer] = React.useState(false);
   const [viewDepartment, setViewDepartment] = React.useState(false);
-  const columns: ColumnDef<any>[] = [
-    {
-      header: "ID",
-      accessorKey: "id",
-      cell: (row: any) => <h6 className="">{row.getValue("id")}</h6>,
-    },
+  const { data: departments, loading, error, get } = useGet<IDepartment[]>("/departments/all", {
+    defaultData: [],
+  });
+
+  const columns: ColumnDef<IDepartment>[] = [
     {
       header: "Name",
       accessorKey: "name",
@@ -36,7 +39,10 @@ const Departments = () => {
       accessorKey: "class",
       cell: (row: any) => (
         <div className="flex items-center gap-x-3">
-          <ActionIcon variant="transparent" onClick={() => setViewDepartment(true)}>
+          <ActionIcon
+            variant="transparent"
+            onClick={() => setViewDepartment(true)}
+          >
             <FaEye />
           </ActionIcon>
         </div>
@@ -69,7 +75,19 @@ const Departments = () => {
       }
     >
       <div className="flex w-full flex-col p-3">
-        <DataTable columns={columns} data={sampleData} />
+      {loading && (
+        <TableSkeleton columns={columns} />
+      )}
+      {error && (
+        <div className="flex flex-col items-center w-full">
+          <span className="flex items-center justify-center text-red-700 text-sm">{error}</span>
+          <Button onClick={get} mt={3} className="flex items-center gap-x-2" px={3}>
+            <AiOutlineReload size={20} className={`mr-2 ${loading ? 'animate-spin' : ''}`} />
+            Retry
+          </Button>
+        </div>
+      )}
+        {!loading && !error && <DataTable columns={columns} data={sampleData} />}
       </div>
       <Drawer
         opened={showDrawer}
