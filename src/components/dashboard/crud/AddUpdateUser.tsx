@@ -1,4 +1,5 @@
 import AsyncSelect from "@/components/core/AsyncSelect";
+import { IUser } from "@/types/user.type";
 import { AuthAPi, getResError } from "@/utils/fetcher";
 import { Button, Input, Select } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
@@ -8,17 +9,19 @@ import { BsFillCameraFill } from "react-icons/bs";
 interface Props {
   refetch: () => void;
   onClose: () => void;
+  isEdit?: boolean;
+  user?: IUser | null;
 }
 
-const AddUpdateUser: FC<Props> = ({refetch, onClose}) => {
+const AddUpdateUser: FC<Props> = ({ refetch, onClose, isEdit, user }) => {
   const [data, setData] = React.useState({
-    username: "",
-    phoneNumber: "",
-    email: "",
-    gender: "",
+    username: user?.username ?? "",
+    phoneNumber: user?.phoneNumber ?? "",
+    email: user?.email ?? "",
+    gender: user?.gender ?? "",
     // registrationCode: "",
     password: "",
-    departmentId: "",
+    departmentId: user?.department?.id ?? "",
   });
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<any>(null);
@@ -56,7 +59,10 @@ const AddUpdateUser: FC<Props> = ({refetch, onClose}) => {
   };
 
   return (
-    <form onSubmit={onSubmit} className=" w-full flex-col flex gap-y-4 py-4 items-center">
+    <form
+      onSubmit={onSubmit}
+      className=" w-full flex-col flex gap-y-4 py-4 items-center"
+    >
       <input type="file" id="photo" hidden />
       <label
         htmlFor="photo"
@@ -126,6 +132,7 @@ const AddUpdateUser: FC<Props> = ({refetch, onClose}) => {
         <Input.Wrapper w={"100%"} label="Your Gender" description="Gender">
           <Select
             mt={6}
+            defaultValue={data.gender}
             data={["MALE", "FEMALE"]}
             onChange={(val) => {
               if (!val) return;
@@ -136,6 +143,7 @@ const AddUpdateUser: FC<Props> = ({refetch, onClose}) => {
         <Input.Wrapper w={"100%"} label="Department" description="Department">
           <AsyncSelect
             dataUrl="/department/all"
+            value={data.departmentId}
             onChange={(val) => {
               console.log(val);
               if (!val) return;
@@ -154,7 +162,7 @@ const AddUpdateUser: FC<Props> = ({refetch, onClose}) => {
         mt={8}
         className=" w-full bg-primary text-white"
       >
-        Add User
+        {isEdit ? "Update User" : "Add User"}
       </Button>
     </form>
   );

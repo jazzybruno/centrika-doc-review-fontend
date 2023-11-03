@@ -7,15 +7,10 @@ import { ColumnDef } from "@tanstack/react-table";
 import React from "react";
 import { FaEye } from "react-icons/fa";
 
-const UserDocuments = () => {
+const Documents = () => {
   const [showDrawer, setShowDrawer] = React.useState(false);
   const [viewDoc, setViewDoc] = React.useState(false);
   const columns: ColumnDef<any>[] = [
-    {
-      header: "ID",
-      accessorKey: "id",
-      cell: (row: any) => <h6 className="">{row.getValue("id")}</h6>,
-    },
     {
       header: "Name",
       accessorKey: "name",
@@ -95,4 +90,4 @@ const UserDocuments = () => {
   );
 };
 
-export default UserDocuments;
+export default Documents;

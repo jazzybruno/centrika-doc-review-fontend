@@ -1,4 +1,4 @@
-import { IModel } from "./base.type";
+import { IDepartment, IModel } from "./base.type";
 
 export interface IUser extends IModel {
     username:       string;
@@ -9,7 +9,7 @@ export interface IUser extends IModel {
     verified:       boolean;
     activationCode: string;
     token:          null;
-    department:     null;
+    department:     IDepartment;
     roles:          IRole[];
 }
 

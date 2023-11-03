@@ -55,3 +55,8 @@ export interface IModel {
     description: string;
     createdBy: IUser;
   }
+
+export interface IDocument extends IModel {
+  name: string;
+  url:  string;
+}
