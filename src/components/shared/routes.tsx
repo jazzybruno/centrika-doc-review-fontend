@@ -11,11 +11,11 @@ interface Route {
 }
 
 export const AdminRoutes: Route[] = [
-  {
-    icon: <LayoutGridIcon />,
-    name: "Dashboard",
-    path: "/dashboard",
-  },
+  // {
+  //   icon: <LayoutGridIcon />,
+  //   name: "Dashboard",
+  //   path: "/dashboard",
+  // },
   {
     icon: <FaUsers />,
     name: "Users",

@@ -11,17 +11,20 @@ const TableSkeleton: FC<Props> = ({ columns }) => {
       <thead>
         <tr className="bg-[rgba(237,238,243)] text-[rgba(48,7,98,0.8)] py-10 rounded-md">
           <th className="p-3 border-[#F7F8FD] border-y-[5px] rounded-l-xl">
-            <input type="checkbox" name="" id="" />{' '}
+            <Skeleton height={30} />
           </th>
-          <th className="p-2 border-[#F7F8FD] border-y-[5px] rounded-l-xl">#</th>
+          <th className="p-2 border-[#F7F8FD] border-y-[5px] rounded-l-xl">
+            <Skeleton height={30} />
+          </th>
           {columns.map((column, i) => (
             <th
               key={i}
               className="p-3 font-semibold whitespace-nowrap border-[#F7F8FD] border-y-[5px] "
             >
-              {(column as any).accessorKey
+              {/* {(column as any).accessorKey
                 ?.replace(/([A-Z])/g, ' $1')
-                .replace(/^./, (str: any) => str.toUpperCase()) ?? `Header ${column.id}`}
+                .replace(/^./, (str: any) => str.toUpperCase()) ?? `Header ${i}`} */}
+                <Skeleton height={30} />
             </th>
           ))}
         </tr>

@@ -32,7 +32,7 @@ export default function Login() {
         const user = res.data.data?.user;
         localStorage.setItem("token", res.data.data?.accessToken);
         localStorage.setItem("user", JSON.stringify(user));
-        const nextUrl = user?.roles[0].roleName === "ADMIN" ? "/dashboard" : "/account";
+        const nextUrl = user?.roles[0].roleName === "ADMIN" ? "/account" : "/account";
         window.location.href = nextUrl;
       }
     } catch (error) {
@@ -50,7 +50,7 @@ export default function Login() {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
 
     if (token && user?.roles[0].roleName === "ADMIN") {
-        return <Navigate to="/dashboard" />;
+        return <Navigate to="/account" />;
     } else if (token) {
         return <Navigate to="/user/documents" />;
     }

@@ -6,14 +6,17 @@ import { useAuth } from "@/contexts/AuthProvider";
 import useGet from "@/hooks/useGet";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import { IDocumentReview } from "@/types/base.type";
+import { getStatusColor } from "@/utils/funcs";
 import {
   ActionIcon,
+  Badge,
   Button,
   Drawer,
   SegmentedControl,
   Tooltip,
 } from "@mantine/core";
 import { ColumnDef } from "@tanstack/react-table";
+import moment from "moment";
 import React, { useEffect } from "react";
 import { AiOutlineEye, AiOutlineReload } from "react-icons/ai";
 import { BiSolidMessageSquareDetail, BiTrash } from "react-icons/bi";
@@ -21,7 +24,14 @@ import { BiSolidMessageSquareDetail, BiTrash } from "react-icons/bi";
 const Documents = () => {
   const [showDrawer, setShowDrawer] = React.useState(false);
   const [reqType, setReqType] = React.useState("mine");
-  const [viewDoc, setViewDoc] = React.useState(false);
+  const [isReviewing, setIsReviewing] = React.useState({
+    opened: false,
+    data: null as IDocumentReview | null,
+  });
+  const [viewDoc, setViewDoc] = React.useState({
+    opened: false,
+    data: null as IDocumentReview | null,
+  });
   const { user } = useAuth();
   const {
     data: documents,
@@ -53,14 +63,39 @@ const Documents = () => {
       cell: ({ row }) => <h6 className="">{row.original.reviewDoc.fileUrl}</h6>,
     },
     {
+      header: "Date Created",
+      cell: ({ row }) => (
+        <h6 className="">
+          {moment(row.original.createdAt).format("DD/MM/YYYY")}
+        </h6>
+      ),
+    },
+    {
+      header: "status",
+      cell: ({ row }) => (
+        <Badge
+          size="lg"
+          color={getStatusColor(row.original.status)}
+          className=""
+        >
+          {row.original.status}
+        </Badge>
+      ),
+    },
+    {
       header: "Actions",
       accessorKey: "class",
-      cell: (row: any) => (
+      cell: (row) => (
         <div className="flex items-center gap-x-3">
           <ActionIcon
             variant="transparent"
             color="black"
-            onClick={() => setViewDoc(true)}
+            onClick={() =>
+              setViewDoc({
+                opened: true,
+                data: row.row.original,
+              })
+            }
           >
             <AiOutlineEye />
           </ActionIcon>
@@ -69,7 +104,12 @@ const Documents = () => {
               <ActionIcon
                 variant="transparent"
                 color="black"
-                onClick={() => setViewDoc(true)}
+                onClick={() =>
+                  setIsReviewing({
+                    opened: true,
+                    data: row.row.original,
+                  })
+                }
               >
                 <BiSolidMessageSquareDetail />
               </ActionIcon>
@@ -132,7 +172,7 @@ const Documents = () => {
             </Button>
           </div>
         )}
-        {!loading && !error && <DataTable columns={columns} data={documents} />}
+        {!loading && !error && <DataTable columns={columns} data={documents?.reverse()} />}
       </div>
       <Drawer
         opened={showDrawer}
@@ -140,6 +180,7 @@ const Documents = () => {
         padding="md"
         size="md"
         position="right"
+        closeOnClickOutside={false}
         title={
           <span className=" font-semibold"> {"Request Document Review"}</span>
         }
@@ -147,14 +188,38 @@ const Documents = () => {
         <AddUpdateDocument refetch={get} onClose={() => setShowDrawer(false)} />
       </Drawer>
       <Drawer
-        opened={viewDoc}
-        onClose={() => setViewDoc(false)}
+        opened={viewDoc.opened || isReviewing.opened}
+        onClose={() => {
+          setViewDoc({
+            opened: false,
+            data: null,
+          });
+          setIsReviewing({
+            opened: false,
+            data: null,
+          });
+        }}
+        closeOnClickOutside={!isReviewing.opened}
         padding="md"
         size="md"
         position="right"
         title={<span className=" font-semibold"> {"Document Overview"}</span>}
       >
-        <ViewDocument />
+        <ViewDocument
+          document={viewDoc.data ?? isReviewing.data}
+          isReviewing={isReviewing.opened}
+          onClose={() => {
+            get();
+            setViewDoc({
+              opened: false,
+              data: null,
+            });
+            setIsReviewing({
+              opened: false,
+              data: null,
+            });
+          }}
+        />
       </Drawer>
     </DashboardLayout>
   );

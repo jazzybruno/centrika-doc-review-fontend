@@ -11,6 +11,7 @@ interface Props {
   labelKey?: string;
   onChange?: (e: any) => void;
   disabled?: boolean;
+  required?: boolean;
 }
 
 const AsyncSelect: FC<Props> = ({
@@ -22,6 +23,7 @@ const AsyncSelect: FC<Props> = ({
   dataUrl,
   onChange,
   disabled,
+  required,
 }) => {
   const [selected, setSelected] = React.useState(value);
   const { data, loading, get } = useGet<any[]>(dataUrl, {
@@ -73,6 +75,7 @@ const AsyncSelect: FC<Props> = ({
         setSelected(e!);
         onChange?.(e);
       }}
+      required={required}
     />
   );
 };

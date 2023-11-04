@@ -86,8 +86,8 @@ const NotificationPage = () => {
           {loading && (
             <div className="flex w-full flex-col gap-y-4">
               {skeletonData.map((item, index) => (
-                <div className="flex flex-col w-full">
-                  <Skeleton key={index} height={50} />
+                <div key={index} className="flex flex-col w-full">
+                  <Skeleton height={50} />
                 </div>
               ))}
             </div>
@@ -107,9 +107,9 @@ const NotificationPage = () => {
             </div>
           ) : !loading ? (
             <div className="flex flex-col items-center gap-y-3 w-full">
-              {filteredList.map((item, index) => (
+              {filteredList.reverse().map((item, index) => (
                 <div
-                  key={index}
+                  key={item.notId}
                   className={`flex items-center justify-between w-full p-3 rounded-lg ${
                     !item.read ? "bg-gray-200" : "bg-white"
                   }`}

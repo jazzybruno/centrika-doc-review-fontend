@@ -42,13 +42,14 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (token && typeof token === 'string') {
          setToken(token);
       }
+      setInit(true);
       getProfile();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <AuthContext.Provider value={{ user, token, setToken, setUser }}>
-      {children}
+      {init ? <div className=" h-screen w-full justify-center items-center">Loading ...</div> : children}
     </AuthContext.Provider>
   );
 };

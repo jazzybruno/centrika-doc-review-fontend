@@ -66,8 +66,8 @@ export interface IDocument extends IModel {
   createdBy: IUser
   department: IDepartment
 }
-export interface IDocumentReview  {
-  status: string
+export interface IDocumentReview extends IModel  {
+  status: "PENDING" | "APPROVED" | "REJECTED";
   reviewers: IUser[]
   reviewDoc: IDocument
   comments: any[]
@@ -77,4 +77,9 @@ export interface INotification extends IModel {
   message: string
   read: boolean
   notId: string
+}
+export interface IComment extends IModel {
+  content: string
+  commentCreator: IUser
+  documentReview: IDocumentReview
 }
