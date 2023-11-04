@@ -5,7 +5,7 @@ import { DataTable } from "@/components/dashboard/data-table.tsx";
 import { useAuth } from "@/contexts/AuthProvider";
 import useGet from "@/hooks/useGet";
 import DashboardLayout from "@/layouts/DashboardLayout";
-import { IDocument, IDocumentReview } from "@/types/base.type";
+import { IDocumentReview } from "@/types/base.type";
 import {
   ActionIcon,
   Button,
@@ -17,7 +17,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import React, { useEffect } from "react";
 import { AiOutlineEye, AiOutlineReload } from "react-icons/ai";
 import { BiSolidMessageSquareDetail, BiTrash } from "react-icons/bi";
-import { FaEye } from "react-icons/fa";
 
 const Documents = () => {
   const [showDrawer, setShowDrawer] = React.useState(false);

@@ -4,7 +4,7 @@ import { AuthAPi, getResError } from "@/utils/fetcher";
 import { useState } from "react";
 
 export default function useNotification() {
-  const { notifications, setNotifications } = useApp();
+  const { notifications, setNotifications, unreadNotifications } = useApp();
   const { user } = useAuth();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -13,7 +13,7 @@ export default function useNotification() {
     setLoading(true);
     setError(null);
     try {
-      const res = await AuthAPi.get(`/notifications/${user?.id}`);
+      const res = await AuthAPi.get(`/notifications/user/${user?.id}`);
       const data = await res.data;
       console.log("getNotifications", data);
       setNotifications(data.data);
@@ -28,10 +28,11 @@ export default function useNotification() {
   const readNotification = async (id: string) => {
     setError(null);
     try {
-      const res = await AuthAPi.put(`/notifications/${id}`);
+      const res = await AuthAPi.put(`/notifications/mark-as-read/${id}`);
       const data = await res.data;
       console.log("readNotification", data);
-      setNotifications(data.data);
+      //   setNotifications(data.data);
+      getNotifications();
     } catch (error: any) {
       console.log("readNotification error", error);
       setError(getResError(error));
@@ -42,13 +43,28 @@ export default function useNotification() {
     setError(null);
     try {
       const res = await AuthAPi.put(
-        `/notifications/mark-all-as-read/${user?.id}`
+        `/notifications/user/mark-as-read/all/${user?.id}`
       );
       const data = await res.data;
       console.log("markAllAsRead", data);
-      setNotifications(data.data);
+      //   setNotifications(data.data);
+      getNotifications();
     } catch (error: any) {
       console.log("markAllAsRead error", error);
+      setError(getResError(error));
+    }
+  };
+
+  const deleteNotification = async (id: string) => {
+    setError(null);
+    try {
+      const res = await AuthAPi.delete(`/notifications/${id}`);
+      const data = await res.data;
+      console.log("deleteNotification", data);
+      //   setNotifications(data.data);
+      getNotifications();
+    } catch (error: any) {
+      console.log("deleteNotification error", error);
       setError(getResError(error));
     }
   };
@@ -61,5 +77,7 @@ export default function useNotification() {
     notifications,
     markAllAsRead,
     setNotifications,
+    deleteNotification,
+    unreadNotifications,
   };
 }

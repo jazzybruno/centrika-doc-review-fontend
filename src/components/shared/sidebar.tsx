@@ -1,16 +1,18 @@
 "use client";
 import { useAuth } from "@/contexts/AuthProvider";
-import { ActionIcon, Avatar } from "@mantine/core";
+import { ActionIcon, Avatar, Badge } from "@mantine/core";
 import { LogOutIcon, MenuIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { AdminRoutes, UserRoutes } from "./routes";
+import { useApp } from "@/contexts/AppProvider";
 
 const Sidebar = () => {
   const [path, setPath] = useState("");
   const [showSidebar, setShowSidebar] = useState(false);
   const { user } = useAuth();
   const pathname = useLocation().pathname;
+  const { unreadNotifications } = useApp();
 
   useEffect(() => {
     setPath(pathname);
@@ -67,29 +69,37 @@ const Sidebar = () => {
             Base
           </div>
           <div className="flex gap-y-0.5 flex-col w-full">
-            {routes.map((route, index) => (
-              <Link
-                to={route.path}
-                key={index}
-                className="flex side-link duration-150 cursor-pointer items-center gap-x-3 pr-3"
-              >
-                <span
-                  className={`${
-                    path === route.path ? "bg-primary" : ""
-                  } w-1 duration-300 h-7 rounded-r-lg`}
-                ></span>
-                <div
-                  className={`flex duration-300 items-center justify-start rounded-md w-full px-4 py-2.5 ${
-                    path === route.path ? "bg-primary text-white" : ""
-                  }`}
+            {routes.map((route, index) => {
+              const isNotifyPath = route.path === "/notifications";
+              return (
+                <Link
+                  to={route.path}
+                  key={index}
+                  className="flex side-link duration-150 cursor-pointer items-center gap-x-3 pr-3"
                 >
-                  {route.icon}
-                  <span className="ml-3 font-[600] whitespace-nowrap text-sm">
-                    {route.name}
-                  </span>
-                </div>
-              </Link>
-            ))}
+                  <span
+                    className={`${
+                      path === route.path ? "bg-primary" : ""
+                    } w-1 duration-300 h-7 rounded-r-lg`}
+                  ></span>
+                  <div
+                    className={`flex duration-300 items-center justify-start rounded-md w-full px-4 py-2.5 ${
+                      path === route.path ? "bg-primary text-white" : ""
+                    }`}
+                  >
+                    {route.icon}
+                    <span className="ml-3 font-[600] whitespace-nowrap text-sm">
+                      {route.name}
+                    </span>
+                    {isNotifyPath && unreadNotifications?.length > 0 && (
+                      <span className=" w-4 text-xs flex items-center justify-center ml-auto rounded-full aspect-square bg-red-500 text-white">
+                        {unreadNotifications?.length}
+                      </span>
+                    )}
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </div>
         <div className="flex flex-col gap-y-3 w-full">
@@ -105,7 +115,9 @@ const Sidebar = () => {
               <Avatar src={"/Logo.png"} size={40} radius={"md"} />
               <div className="flex flex-col">
                 <span className="font-semibold text-sm">{user?.username}</span>
-                <span className="text-xs text-muted-foreground truncate max-w-[9em]">{user?.email}</span>
+                <span className="text-xs text-muted-foreground truncate max-w-[9em]">
+                  {user?.email}
+                </span>
               </div>
             </Link>
             <ActionIcon

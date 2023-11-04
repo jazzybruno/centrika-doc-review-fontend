@@ -72,3 +72,9 @@ export interface IDocumentReview  {
   reviewDoc: IDocument
   comments: any[]
 }
+
+export interface INotification extends IModel {
+  message: string
+  read: boolean
+  notId: string
+}

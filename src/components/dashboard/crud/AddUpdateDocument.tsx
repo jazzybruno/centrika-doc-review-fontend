@@ -33,6 +33,7 @@ const AddUpdateDocument: FC<Props> = ({refetch, onClose}) => {
 
   const sendData = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
     const formData = new FormData();
     if (!file) {
       setError("Please select a file");
@@ -78,6 +79,7 @@ const AddUpdateDocument: FC<Props> = ({refetch, onClose}) => {
         autoClose: 3000,
       });
     }
+    setLoading(false);
   };
 
   return (

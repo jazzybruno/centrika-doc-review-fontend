@@ -8,16 +8,19 @@ import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import "@mantine/dropzone/styles.css";
 import { Notifications } from "@mantine/notifications";
+import { HelmetProvider } from "react-helmet-async";
 // import '@mantine/dates/styles.css';
 // import '@mantine/spotlight/styles.css';
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   // <React.StrictMode>
+  <HelmetProvider>
     <AuthProvider>
       <AppProvider>
         <Notifications position="top-right" />
         <App />
       </AppProvider>
     </AuthProvider>
+  </HelmetProvider>
   // </React.StrictMode>
 );

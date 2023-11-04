@@ -1,4 +1,5 @@
 import { jwtDecode } from "jwt-decode";
+import moment from "moment";
 
 export const getTokenData = (token : string) => {
     if (!token) 
@@ -9,4 +10,9 @@ export const getTokenData = (token : string) => {
     } catch (error) { // console.log(error);
         return null;
     }
+};
+
+// humanize date from now
+export const humanizeDate = (date : string | Date) => {
+    return moment(date).fromNow();
 };

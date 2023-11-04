@@ -1,13 +1,16 @@
 /* eslint-disable react-refresh/only-export-components */
+import { INotification } from "@/types/base.type";
 import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 
 interface AppContextProps {
   showRight: boolean;
   setShowRight: (show: boolean) => void;
-  notifications: any;
+  notifications: INotification[];
   setNotifications: (notifications: any) => void;
+  unreadNotifications: INotification[];
+  setUnreadNotifications: (notifications: any) => void;
 }
 
 const AppContext = React.createContext<AppContextProps>({
@@ -15,13 +18,23 @@ const AppContext = React.createContext<AppContextProps>({
   setShowRight: () => {},
   notifications: [],
   setNotifications: () => {},
+  unreadNotifications: [],
+  setUnreadNotifications: () => {},
 });
 
 export const useApp = () => useContext(AppContext);
- 
-const AppProvider = ({children}: {children: React.ReactNode}) => {
+
+const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const [showRight, setShowRight] = React.useState(false);
-  const [notifications, setNotifications] = React.useState<any>([]);
+  const [notifications, setNotifications] = React.useState<INotification[]>([]);
+  const [unreadNotifications, setUnreadNotifications] = React.useState<
+    INotification[]
+  >([]);
+
+  useEffect(() => {
+    const unread = notifications.filter((item) => !item.read);
+    setUnreadNotifications(unread);
+  }, [notifications]);
 
   return (
     <MantineProvider
@@ -44,7 +57,16 @@ const AppProvider = ({children}: {children: React.ReactNode}) => {
       }}
     >
       <Notifications position="top-right" />
-      <AppContext.Provider value={{showRight, setShowRight, notifications, setNotifications}}>
+      <AppContext.Provider
+        value={{
+          showRight,
+          setShowRight,
+          notifications,
+          setNotifications,
+          unreadNotifications,
+          setUnreadNotifications,
+        }}
+      >
         {children}
       </AppContext.Provider>
     </MantineProvider>
