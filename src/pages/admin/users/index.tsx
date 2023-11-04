@@ -10,11 +10,9 @@ import DashboardLayout from "@/layouts/DashboardLayout";
 import { IUser } from "@/types/user.type";
 import { ActionIcon, Button, Drawer } from "@mantine/core";
 import { ColumnDef } from "@tanstack/react-table";
-import { DeleteIcon, EditIcon } from "lucide-react";
 import React, { useState } from "react";
-import { AiFillEye, AiOutlineEye, AiOutlineReload } from "react-icons/ai";
+import { AiOutlineEye, AiOutlineReload } from "react-icons/ai";
 import { BiEdit, BiTrash } from "react-icons/bi";
-import { FaEye } from "react-icons/fa";
 
 const Users = () => {
   const [showDrawer, setShowDrawer] = React.useState(false);
@@ -191,8 +189,8 @@ const Users = () => {
       >
         <DeleteForm
           onCancel={() => setIsDelete({ status: false, data: null })}
-          onDelete={() => {
-            deleteData(isDelete.data?.id);
+          onDelete={async () => {
+            await deleteData(isDelete.data?.id);
             setIsDelete({ status: false, data: null });
             get();
           }}

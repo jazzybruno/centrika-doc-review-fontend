@@ -1,25 +1,90 @@
 import AsyncSelect from "@/components/core/AsyncSelect";
 import UploadArea from "@/components/core/UploadArea";
-import { Button, Input, Select } from "@mantine/core";
+import { useAuth } from "@/contexts/AuthProvider";
+import { AuthAPi, getResError } from "@/utils/fetcher";
+import { Button, Input, Select, Textarea } from "@mantine/core";
 import { PDF_MIME_TYPE } from "@mantine/dropzone";
-import React from "react";
+import { notifications } from "@mantine/notifications";
+import React, { FC } from "react";
 
-const AddUpdateDocument = () => {
+interface Props {
+  refetch: () => void;
+  onClose: () => void;
+}
+
+const AddUpdateDocument: FC<Props> = ({refetch, onClose}) => {
+  const { user } = useAuth();
   const [data, setData] = React.useState({
-    fileName: "",
-    referenceNumber: "",
-    receiverName: "",
-    department: "",
+    title: "",
+    reviewer: "",
+    departmentId: "",
+    category: "",
+    description: "",
+    creator: user?.id ?? "",
   });
   const [file, setFile] = React.useState<File | null>(null);
+  const [error, setError] = React.useState<any>(null);
+  const [loading, setLoading] = React.useState(false);
 
   const handleFileChange = (files: File[]) => {
     console.log(files);
     setFile(files[0]);
   };
 
+  const sendData = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData();
+    if (!file) {
+      setError("Please select a file");
+      return;
+    }
+    // Append the file to the form data
+    formData.append("file", file);
+    formData.append("title", data.title);
+    formData.append("description", data.description);
+    formData.append("category", data.category);
+    formData.append("departmentId", data.departmentId);
+    formData.append("creator", data.creator);
+    formData.append("reviewer", data.reviewer);
+
+    try {
+      const response = await AuthAPi.post(
+        "/document-reviews/request",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      // Handle the response
+      console.log(response);
+      if (response.status === 200) {
+        notifications.show({
+          title: "Add Document Success",
+          message: "Add Document Success",
+          color: "green",
+          autoClose: 3000,
+        });
+        refetch();
+        onClose();
+      }
+    } catch (error) {
+      console.error(error);
+      notifications.show({
+        title: "Add Document Failed",
+        message: getResError(error),
+        color: "red",
+        autoClose: 3000,
+      });
+    }
+  };
+
   return (
-    <form className=" w-full flex-col flex gap-y-4 py-4 items-center">
+    <form
+      onSubmit={sendData}
+      className=" w-full flex-col flex gap-y-4 py-4 items-center"
+    >
       <UploadArea
         onDrop={handleFileChange}
         accept={PDF_MIME_TYPE}
@@ -31,29 +96,20 @@ const AddUpdateDocument = () => {
           </div>
         ) : null}
       </UploadArea>
+      {error && (
+        <div className="text-red-500 text-sm font-semibold">{error}</div>
+      )}
       <div className="flex mt-5 w-full flex-col gap-y-4">
         <Input.Wrapper
           w={"100%"}
-          label="Your File Name"
-          description="File Name"
-        >
-          <Input required placeholder="Name" p={2} variant="filled" size="md" />
-        </Input.Wrapper>
-        <Input.Wrapper
-          w={"100%"}
-          label="Your Last Name"
-          description="Last Name"
-        >
-          <Input required placeholder="Name" p={2} variant="filled" size="md" />
-        </Input.Wrapper>
-        <Input.Wrapper
-          w={"100%"}
-          label="Reference Number "
-          description="Reference Number"
+          label="Your File Title"
+          description="File Title"
         >
           <Input
             required
-            placeholder="Reference Number"
+            value={data.title}
+            onChange={(e) => setData({ ...data, title: e.target.value })}
+            placeholder="Name"
             p={2}
             variant="filled"
             size="md"
@@ -61,15 +117,29 @@ const AddUpdateDocument = () => {
         </Input.Wrapper>
         <Input.Wrapper
           w={"100%"}
-          label="Receiver Name"
-          description="Receiver Name"
+          label="Description "
+          description="Description"
         >
-          <AsyncSelect
-            dataUrl="/department/all"
+          <Textarea
+            onChange={(e) =>
+              setData((prev) => ({ ...prev, description: e.target.value }))
+            }
+            value={data.description}
+            required
+            placeholder="Email"
+            p={2}
+            variant="filled"
+            size="md"
+          />
+        </Input.Wrapper>
+        <Input.Wrapper w={"100%"} label="Category" description="Category">
+          <Select
+            mt={6}
+            defaultValue={data.category}
+            data={["INTERNAL", "EXTERNAL"]}
             onChange={(val) => {
-              console.log(val);
               if (!val) return;
-              setData({ ...data, receiverName: val });
+              setData({ ...data, category: val });
             }}
           />
         </Input.Wrapper>
@@ -79,13 +149,34 @@ const AddUpdateDocument = () => {
             onChange={(val) => {
               console.log(val);
               if (!val) return;
-              setData({ ...data, department: val });
+              setData({ ...data, departmentId: val });
+            }}
+          />
+        </Input.Wrapper>
+        <Input.Wrapper
+          w={"100%"}
+          label="Reviewer Name"
+          description="Reviewer Name"
+        >
+          <AsyncSelect
+            dataUrl={
+              data.departmentId
+                ? `/users/department/${data.departmentId}`
+                : `/users/all`
+            }
+            labelKey="username"
+            onChange={(val) => {
+              console.log(val);
+              if (!val) return;
+              setData({ ...data, reviewer: val });
             }}
           />
         </Input.Wrapper>
       </div>
       <Button
         type="submit"
+        loading={loading}
+        disabled={loading}
         radius="md"
         w={"100%"}
         size="md"

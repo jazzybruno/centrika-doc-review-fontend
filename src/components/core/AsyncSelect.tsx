@@ -1,6 +1,6 @@
-import useGet from '@/hooks/useGet';
-import { Select } from '@mantine/core';
-import React, { FC, useEffect } from 'react';
+import useGet from "@/hooks/useGet";
+import { Select } from "@mantine/core";
+import React, { FC, useEffect } from "react";
 
 interface Props {
   label?: string;
@@ -24,23 +24,39 @@ const AsyncSelect: FC<Props> = ({
   disabled,
 }) => {
   const [selected, setSelected] = React.useState(value);
-  const { data, loading } = useGet<any[]>(dataUrl, { defaultData: [] });
+  const { data, loading, get } = useGet<any[]>(dataUrl, {
+    defaultData: [],
+    onMount: false,
+  });
   const [selectedData, setSelectedData] = React.useState<any[]>([]);
 
   useEffect(() => {
-    console.log('data', data);
+    console.log("data", data);
+    if (!data) return;
     const selectData = data?.map((item) => ({
-      value: item[accessorKey ?? 'id'],
-      label: item[labelKey ?? 'name'],
+      value: item[accessorKey ?? "id"],
+      label: item[labelKey ?? "name"],
     }));
     setSelectedData(selectData ?? []);
-    const selected = data?.find((item) => item[accessorKey ?? 'id'] === value);
-    console.log('selected use', selected?.id);
+    const selected = data?.find((item) => item[accessorKey ?? "id"] === value);
+    console.log("selected use", selected?.id);
     if (selected) {
       setSelected(selected.id);
     }
   }, [accessorKey, data, labelKey, value]);
-  const loadingData = [{ value: 'loading', label: 'Loading...', disabled: true }];
+
+  useEffect(() => {
+    if (!dataUrl) return;
+    get();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataUrl]);
+
+  const loadingData = [
+    { value: "loading", label: "Loading...", disabled: true },
+  ];
+
+  const noData = [{ value: "no-data", label: "No data found", disabled: true }];
+
   return (
     <Select
       label={label}
@@ -48,7 +64,7 @@ const AsyncSelect: FC<Props> = ({
       // variant="unstyled"
       mt={6}
       disabled={disabled}
-      data={loading ? loadingData : selectedData}
+      data={loading ? loadingData : data?.length === 0 ? noData : selectedData}
       value={selected}
       nothingFoundMessage="No data found"
       onChange={(e) => {

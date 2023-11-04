@@ -33,7 +33,7 @@ export default function Login() {
         localStorage.setItem("token", res.data.data?.accessToken);
         localStorage.setItem("user", JSON.stringify(user));
         const nextUrl = user?.roles[0].roleName === "ADMIN" ? "/dashboard" : "/account";
-        navigate(nextUrl);
+        window.location.href = nextUrl;
       }
     } catch (error) {
       console.log(error);
@@ -52,7 +52,7 @@ export default function Login() {
     if (token && user?.roles[0].roleName === "ADMIN") {
         return <Navigate to="/dashboard" />;
     } else if (token) {
-        return <Navigate to="/account" />;
+        return <Navigate to="/user/documents" />;
     }
 
   return (

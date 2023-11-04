@@ -1,19 +1,28 @@
+/* eslint-disable react-refresh/only-export-components */
 import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
-import React from "react";
+import React, { useContext } from "react";
 
 interface AppContextProps {
   showRight: boolean;
   setShowRight: (show: boolean) => void;
+  notifications: any;
+  setNotifications: (notifications: any) => void;
 }
 
 const AppContext = React.createContext<AppContextProps>({
   showRight: false,
   setShowRight: () => {},
+  notifications: [],
+  setNotifications: () => {},
 });
+
+export const useApp = () => useContext(AppContext);
  
 const AppProvider = ({children}: {children: React.ReactNode}) => {
   const [showRight, setShowRight] = React.useState(false);
+  const [notifications, setNotifications] = React.useState<any>([]);
+
   return (
     <MantineProvider
       theme={{
@@ -35,7 +44,7 @@ const AppProvider = ({children}: {children: React.ReactNode}) => {
       }}
     >
       <Notifications position="top-right" />
-      <AppContext.Provider value={{showRight, setShowRight}}>
+      <AppContext.Provider value={{showRight, setShowRight, notifications, setNotifications}}>
         {children}
       </AppContext.Provider>
     </MantineProvider>

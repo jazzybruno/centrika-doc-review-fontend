@@ -11,7 +11,7 @@ const DashboardLayout: FC<Props> = ({children, right}) => {
   return (
     <div className=' w-full flex min-h-screen'>
         <Sidebar  />
-        <div className="flex w-full bg-[#FAFAFB] flex-col md:pl-[220px]">
+        <div className="flex w-full bg-[#FAFAFB] flex-col 2md:pl-[220px]">
             <NavBar right={right}/>
             {children}
         </div>

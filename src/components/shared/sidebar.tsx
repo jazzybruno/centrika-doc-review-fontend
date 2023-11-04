@@ -1,46 +1,15 @@
 "use client";
-import {
-  LayoutGridIcon,
-  LogOutIcon,
-  MenuIcon,
-  MenuSquareIcon,
-  UserCircleIcon,
-} from "lucide-react";
-import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { FaFile, FaUsers } from "react-icons/fa";
+import { useAuth } from "@/contexts/AuthProvider";
 import { ActionIcon, Avatar } from "@mantine/core";
+import { LogOutIcon, MenuIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { AdminRoutes, UserRoutes } from "./routes";
 
-const routes = [
-  {
-    icon: <LayoutGridIcon />,
-    name: "Dashboard",
-    path: "/dashboard",
-  },
-  {
-    icon: <FaUsers />,
-    name: "Users",
-    path: "/users",
-  },
-  {
-    icon: <MenuSquareIcon />,
-    name: "Departments",
-    path: "/departments",
-  },
-  {
-    icon: <FaFile />,
-    name: "Documents",
-    path: "/documents",
-  },
-  {
-    icon: <UserCircleIcon />,
-    name: "Account",
-    path: "/account",
-  },
-];
 const Sidebar = () => {
   const [path, setPath] = useState("");
   const [showSidebar, setShowSidebar] = useState(false);
+  const { user } = useAuth();
   const pathname = useLocation().pathname;
 
   useEffect(() => {
@@ -65,7 +34,9 @@ const Sidebar = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     window.location.href = "/";
-  }
+  };
+
+  const routes = user?.roles[0].roleName === "ADMIN" ? AdminRoutes : UserRoutes;
 
   return (
     <>
@@ -129,17 +100,16 @@ const Sidebar = () => {
             alt="Banner"
             className="rounded-md object-cover w-full"
           />
-          <div className="flex w-full justify-between hover:bg-[#FAFAFB] p-2 rounded-md gap-x-3">
+          <div className="flex w-full items-center justify-between hover:bg-[#FAFAFB] p-2 rounded-md gap-x-3">
             <Link to={"/account"} className="flex flex-1 gap-3 items-center">
-              <Avatar src={"/Logo.png"} size={40} radius={'md'} />
+              <Avatar src={"/Logo.png"} size={40} radius={"md"} />
               <div className="flex flex-col">
-                <span className="font-semibold text-sm">Admin</span>
-                <span className="text-xs text-muted-foreground">
-                  Admin
-                </span>
+                <span className="font-semibold text-sm">{user?.username}</span>
+                <span className="text-xs text-muted-foreground truncate max-w-[9em]">{user?.email}</span>
               </div>
             </Link>
-            <ActionIcon variant="transparent"
+            <ActionIcon
+              variant="transparent"
               onClick={logout}
               className="flex py-2.5 hover:text-primary rounded-md duration-300 items-center gap-3 px-6 hover:bg-accent"
             >

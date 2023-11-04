@@ -6,6 +6,7 @@ import Departments from "./pages/admin/departments";
 import Documents from "./pages/admin/documents";
 import AccountIndex from "./pages/account";
 import UserDocuments from "./pages/user/documents";
+import NotificationPage from "./pages/notifications";
 
 function App() {
   const AuthRoute = () => {
@@ -37,6 +38,7 @@ function App() {
         </Route>
         <Route element={<AuthRoute />}>
           <Route path="/account" element={<AccountIndex />} />
+          <Route path="/notifications" element={<NotificationPage />} />
           <Route path="/user/documents" element={<UserDocuments />} />
         </Route>
       </Routes>

@@ -57,6 +57,18 @@ export interface IModel {
   }
 
 export interface IDocument extends IModel {
-  name: string;
-  url:  string;
+  title: string
+  description: string
+  fileUrl: string
+  category: string
+  status: string
+  referenceNumber: number
+  createdBy: IUser
+  department: IDepartment
+}
+export interface IDocumentReview  {
+  status: string
+  reviewers: IUser[]
+  reviewDoc: IDocument
+  comments: any[]
 }
