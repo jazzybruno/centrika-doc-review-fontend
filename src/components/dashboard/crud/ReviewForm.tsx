@@ -8,7 +8,7 @@ import React, { FC } from "react";
 
 interface Props {
   document: IDocumentReview | null;
-  onClose: () => void;
+  onClose?: () => void;
 }
 
 const ReviewForm: FC<Props> = ({ document, onClose }) => {
@@ -53,7 +53,7 @@ const ReviewForm: FC<Props> = ({ document, onClose }) => {
       });
       setLoading(false);
       //   setReview(defaultData);
-      onClose();
+      onClose?.();
     } catch (error) {
       console.log(error);
       notifications.show({

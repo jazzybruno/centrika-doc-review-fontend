@@ -1,6 +1,6 @@
 import TableSkeleton from "@/components/core/TableSkeleton";
 import AddUpdateDocument from "@/components/dashboard/crud/AddUpdateDocument";
-import ViewDocument from "@/components/dashboard/crud/ViewDocument";
+import ViewDocumentReview from "@/components/dashboard/crud/ViewDocumentReviewReview";
 import { DataTable } from "@/components/dashboard/data-table.tsx";
 import { useAuth } from "@/contexts/AuthProvider";
 import useGet from "@/hooks/useGet";
@@ -205,7 +205,7 @@ const Documents = () => {
         position="right"
         title={<span className=" font-semibold"> {"Document Overview"}</span>}
       >
-        <ViewDocument
+        <ViewDocumentReview
           document={viewDoc.data ?? isReviewing.data}
           isReviewing={isReviewing.opened}
           onClose={() => {
