@@ -1,6 +1,6 @@
 import TableSkeleton from "@/components/core/TableSkeleton";
 import AddUpdateDocument from "@/components/dashboard/crud/AddUpdateDocument";
-import ViewDocumentReview from "@/components/dashboard/crud/ViewDocumentReviewReview";
+import ViewDocumentReview from "@/components/dashboard/crud/ViewDocumentReview";
 import { DataTable } from "@/components/dashboard/data-table.tsx";
 import { useAuth } from "@/contexts/AuthProvider";
 import useGet from "@/hooks/useGet";
