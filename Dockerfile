@@ -1,17 +1,9 @@
-# build stage
-FROM node:lts-alpine as build-stage
+FROM node:lts-alpine as build
 WORKDIR /app
-COPY package*.json ./
-RUN npm install
+COPY package.json .
+RUN npm i
 COPY . .
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-ENTRYPOINT ["/entrypoint.sh"]
 RUN npm run build
-
-# production stage
-FROM nginx:stable-alpine as production-stage
-COPY --from=build-stage /app/dist /usr/share/nginx/html
-EXPOSE 5172
-CMD ["nginx", "-g", "daemon off;"]
+FROM nginx
+COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+COPY --from=build /app/dist /usr/share/nginx/html
