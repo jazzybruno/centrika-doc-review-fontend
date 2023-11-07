@@ -28,13 +28,27 @@ const ViewUser: FC<Props> = ({ user }) => {
             <FaEnvelope />
             <p>{user?.email}</p>
           </div>
-          <Divider w={'100%'} />
+          <Divider w={"100%"} />
           <div className="flex items-center gap-x-2">
             <FaPhoneAlt />
             <p>{user?.phoneNumber}</p>
           </div>
         </div>
       </div>
+      {user?.department && (
+        <>
+          <Divider my={"sm"} />
+          <div className="flex w-full flex-col gap-y-3">
+            <h1 className=" font-semibold">Department Info</h1>
+            <div className="flex flex-col gap-y-2">
+              <p className="text-sm font-semibold">{user?.department?.name}</p>
+              <p className="text-sm opacity-80">
+                {user?.department.description}
+              </p>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
