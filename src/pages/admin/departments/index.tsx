@@ -98,7 +98,7 @@ const Departments = () => {
           </div>
         )}
         {!loading && !error && (
-          <DataTable columns={columns} data={departments} />
+          <DataTable searchKey="name" columns={columns} data={departments} />
         )}
       </div>
       <Drawer

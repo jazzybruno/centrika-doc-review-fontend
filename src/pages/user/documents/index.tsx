@@ -56,6 +56,7 @@ const Documents = () => {
   const columns: ColumnDef<IDocumentReview>[] = [
     {
       header: "File Name",
+      accessorKey: "name",
       cell: ({ row }) => <h6 className="">{row.original.reviewDoc.title}</h6>,
     },
     {
@@ -172,7 +173,7 @@ const Documents = () => {
             </Button>
           </div>
         )}
-        {!loading && !error && <DataTable columns={columns} data={documents?.reverse()} />}
+        {!loading && !error && <DataTable searchKey="name" columns={columns} data={documents?.reverse()} />}
       </div>
       <Drawer
         opened={showDrawer}

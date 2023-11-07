@@ -142,7 +142,7 @@ const Users = () => {
             </Button>
           </div>
         )}
-        {!loading && !error && <DataTable columns={columns} data={users} />}
+        {!loading && !error && <DataTable searchKey="username" columns={columns} data={users} />}
       </div>
       <Drawer
         opened={showDrawer || isEdit.status}

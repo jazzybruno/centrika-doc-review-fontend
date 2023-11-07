@@ -106,7 +106,7 @@ const Documents = () => {
             </Button>
           </div>
         )}
-        {!loading && !error && <DataTable columns={columns} data={documents} />}
+        {!loading && !error && <DataTable searchKey="title" columns={columns} data={documents} />}
       </div>
       <Drawer
         opened={showDrawer}

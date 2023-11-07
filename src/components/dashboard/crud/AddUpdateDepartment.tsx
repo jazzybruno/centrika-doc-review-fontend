@@ -102,7 +102,7 @@ const AddUpdateDepartment: FC<Props> = ({ refetch, onClose }) => {
         mt={8}
         className=" w-full bg-primary text-white"
       >
-        Add User
+        Add Department
       </Button>
     </form>
   );
