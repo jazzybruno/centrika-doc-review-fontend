@@ -8,7 +8,7 @@ const AccountIndex = () => {
 
   return (
     <DashboardLayout>
-      <div className="w-full h-full flex flex-col items-center">
+      <div className="w-full h-full flex p-4 flex-col items-center">
         <div className=" border-mainblue border-2 rounded-full mt-11">
           <img
             className=" rounded-full w-40"

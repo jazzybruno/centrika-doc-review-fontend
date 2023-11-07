@@ -1,5 +1,6 @@
 import TableSkeleton from "@/components/core/TableSkeleton";
 import AddUpdateDocument from "@/components/dashboard/crud/AddUpdateDocument";
+import ViewDocument from "@/components/dashboard/crud/ViewDocument";
 import ViewDocumentReview from "@/components/dashboard/crud/ViewDocumentReview";
 import { DataTable } from "@/components/dashboard/data-table.tsx";
 import useGet from "@/hooks/useGet";
@@ -128,7 +129,7 @@ const Documents = () => {
         position="right"
         title={<span className=" font-semibold"> {"Document Overview"}</span>}
       >
-        <ViewDocumentReview document={viewDoc.data} />
+        <ViewDocument document={viewDoc.data} />
       </Drawer>
     </DashboardLayout>
   );
