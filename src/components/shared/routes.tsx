@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
-import { LayoutGridIcon, MenuSquareIcon, UserCircleIcon } from "lucide-react";
-import { BiBell } from "react-icons/bi";
+import { LayoutGridIcon, MenuSquareIcon, UserCircleIcon , Nut } from "lucide-react";
+import { BiBell , } from "react-icons/bi";
 import { FaUsers, FaFile } from "react-icons/fa";
 
 interface Route {
@@ -30,6 +30,12 @@ export const AdminRoutes: Route[] = [
     icon: <FaFile siz />,
     name: "Documents",
     path: "/documents",
+  },
+  {
+    icon: <Nut size={20} />,
+    name: "Reference Number",
+    path: "/reference",
+    isPublic: true,
   },
   {
     icon: <BiBell size={20} />,

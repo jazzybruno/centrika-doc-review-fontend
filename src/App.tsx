@@ -8,6 +8,7 @@ import AccountIndex from "./pages/account";
 import UserDocuments from "./pages/user/documents";
 import NotificationPage from "./pages/notifications";
 import ViewDocumentPdf from "./pages/view-document";
+import ReferenceIndex from "./pages/reference";
 
 function App() {
   const AuthRoute = () => {
@@ -39,6 +40,7 @@ function App() {
         </Route>
         <Route element={<AuthRoute />}>
           <Route path="/account" element={<AccountIndex />} />
+          <Route path="/reference" element={<ReferenceIndex />} />
           <Route path="/notifications" element={<NotificationPage />} />
           <Route path="/user/documents" element={<UserDocuments />} />
           <Route path="/document/:id" element={<ViewDocumentPdf />} />
