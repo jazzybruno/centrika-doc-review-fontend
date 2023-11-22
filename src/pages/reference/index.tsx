@@ -3,39 +3,45 @@ import { useAuth } from "@/contexts/AuthProvider";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import { Input, InputWrapper } from "@mantine/core";
 import React from "react";
+import axios from "axios";
+import { AuthAPi } from "@/utils/fetcher";
 
 const ReferenceIndex = () => {
   const { user } = useAuth();
   const [count, setCount] = useState(0);
-  const referenceNumber = 45; // Set your desired reference number here
+  const [loading, setLoading] = useState(true);
+  const referenceNumber = 45; // Set your initial reference number here
   const interval = 3000; // Update every 3 seconds
 
   useEffect(() => {
-    let currentCount = 0;
-    const steps = Math.ceil(referenceNumber / (interval / 500));
-    const stepValue = Math.ceil(referenceNumber / steps);
-
-    const updateCount = () => {
-      if (currentCount < referenceNumber) {
-        setCount(currentCount);
-        currentCount += stepValue;
-        setTimeout(updateCount, interval / steps);
-      } else {
-        setCount(referenceNumber);
+    const fetchData = async () => {
+      try {
+        const response = await AuthAPi.get('/document/reference-number');
+        const apiReferenceNumber = response.data.data; // Adjust this based on your API response structure
+        setCount(apiReferenceNumber);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching reference number:", error);
       }
     };
 
-    updateCount();
+    fetchData();
 
-    // Clear the timeout on component unmount
-    return () => clearTimeout(interval);
+    // Set up interval to fetch data every 3 seconds
+    const intervalId = setInterval(fetchData, interval);
+
+    // Clear the interval on component unmount
+    return () => clearInterval(intervalId);
   }, []);
 
   return (
     <DashboardLayout>
       <div className="w-full h-full flex p-4 flex-co justify-center items-center">
-        {/* <div className="font-mulish font-normal text-5xl">The Current Reference Number is : </div> */}
-        <div className="font-montserrat font-extrabold text-[10em]">#{count}</div>
+        {loading ? (
+          <div>Loading...</div>
+        ) : (
+          <div className="font-montserrat font-extrabold text-[10em]">#{count}</div>
+        )}
       </div>
     </DashboardLayout>
   );
