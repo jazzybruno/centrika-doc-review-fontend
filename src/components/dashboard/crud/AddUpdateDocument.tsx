@@ -1,6 +1,7 @@
 import AsyncSelect from "@/components/core/AsyncSelect";
 import UploadArea from "@/components/core/UploadArea";
 import { useAuth } from "@/contexts/AuthProvider";
+import { IDocumentReview } from "@/types/base.type";
 import { AuthAPi, getResError } from "@/utils/fetcher";
 import { Button, Input, Select, Textarea } from "@mantine/core";
 import { PDF_MIME_TYPE } from "@mantine/dropzone";
@@ -10,16 +11,23 @@ import React, { FC } from "react";
 interface Props {
   refetch: () => void;
   onClose: () => void;
+  data?: IDocumentReview | null;
+  isEdit?: boolean;
 }
 
-const AddUpdateDocument: FC<Props> = ({refetch, onClose}) => {
+const AddUpdateDocument: FC<Props> = ({
+  refetch,
+  onClose,
+  data: toUpdate,
+  isEdit,
+}) => {
   const { user } = useAuth();
   const [data, setData] = React.useState({
-    title: "",
-    reviewer: "",
-    departmentId: "",
-    category: "",
-    description: "",
+    title: toUpdate?.reviewDoc?.title ?? "",
+    reviewer: toUpdate?.reviewers[0]?.id ?? "",
+    departmentId: toUpdate?.reviewDoc?.department?.id ?? "",
+    category: toUpdate?.reviewDoc?.category ?? "",
+    description: toUpdate?.reviewDoc?.description ?? "",
     creator: user?.id ?? "",
   });
   const [file, setFile] = React.useState<File | null>(null);
@@ -44,26 +52,32 @@ const AddUpdateDocument: FC<Props> = ({refetch, onClose}) => {
     formData.append("title", data.title);
     formData.append("description", data.description);
     formData.append("category", data.category);
-    formData.append("departmentId", data.departmentId);
+    formData.append("departmentId", data?.departmentId);
     formData.append("creator", data.creator);
     formData.append("reviewer", data.reviewer);
 
     try {
-      const response = await AuthAPi.post(
-        "/document-reviews/request",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = isEdit
+        ? await AuthAPi.put("/document-reviews", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+        : await AuthAPi.post("/document-reviews/request", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
       // Handle the response
       console.log(response);
       if (response.status === 200) {
         notifications.show({
-          title: "Add Document Success",
-          message: "Add Document Success",
+          title: `${
+            isEdit ? "Update Document Success" : "Add Document Success"
+          }`,
+          message: `${
+            isEdit ? "Update Document Success" : "Add Document Success"
+          }`,
           color: "green",
           autoClose: 3000,
         });
@@ -148,6 +162,7 @@ const AddUpdateDocument: FC<Props> = ({refetch, onClose}) => {
         <Input.Wrapper w={"100%"} label="Department" description="Department">
           <AsyncSelect
             dataUrl="/department/all"
+            value={data.departmentId}
             onChange={(val) => {
               console.log(val);
               if (!val) return;

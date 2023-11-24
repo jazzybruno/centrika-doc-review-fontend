@@ -106,6 +106,18 @@ const ViewDepartment: FC<Props> = ({ department }) => {
             {i !== usersInDepartment.length - 1 && <Divider />}
           </>
         ))}
+        {/* <Avatar.Group>
+          <Avatar
+            src={`https://ui-avatars.com/api/?name=${usersInDepartment[0].username}+${usersInDepartment[0].email}&bold=true`}
+          />
+          <Avatar
+            src={`https://ui-avatars.com/api/?name=${usersInDepartment[0].username}+${usersInDepartment[0].email}&bold=true`}
+          />
+          <Avatar
+            src={`https://ui-avatars.com/api/?name=${usersInDepartment[0].username}+${usersInDepartment[0].email}&bold=true`}
+          />
+          <Avatar>+5</Avatar>
+        </Avatar.Group> */}
       </div>
       <div className="flex text-sm flex-col gap-y-2">
         <p>Issued On</p>

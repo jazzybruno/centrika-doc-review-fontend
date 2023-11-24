@@ -19,7 +19,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import moment from "moment";
 import React, { useEffect } from "react";
 import { AiOutlineEye, AiOutlineReload } from "react-icons/ai";
-import { BiSolidMessageSquareDetail, BiTrash } from "react-icons/bi";
+import { BiEdit, BiSolidMessageSquareDetail, BiTrash } from "react-icons/bi";
 
 const Documents = () => {
   const [showDrawer, setShowDrawer] = React.useState(false);
@@ -30,6 +30,10 @@ const Documents = () => {
   });
   const [viewDoc, setViewDoc] = React.useState({
     opened: false,
+    data: null as IDocumentReview | null,
+  });
+  const [isEdit, setIsEdit] = React.useState({
+    status: false,
     data: null as IDocumentReview | null,
   });
   const { user } = useAuth();
@@ -100,6 +104,20 @@ const Documents = () => {
           >
             <AiOutlineEye />
           </ActionIcon>
+          {reqType === "mine" && (
+            <ActionIcon
+              variant="transparent"
+              color="black"
+              onClick={() =>
+                setIsEdit({
+                  status: true,
+                  data: row.row.original,
+                })
+              }
+            >
+              <BiEdit />
+            </ActionIcon>
+          )}
           {reqType !== "mine" && (
             <Tooltip label="Review">
               <ActionIcon
@@ -173,20 +191,46 @@ const Documents = () => {
             </Button>
           </div>
         )}
-        {!loading && !error && <DataTable searchKey="name" columns={columns} data={documents?.reverse()} />}
+        {!loading && !error && (
+          <DataTable
+            searchKey="name"
+            columns={columns}
+            data={documents?.reverse()}
+          />
+        )}
       </div>
       <Drawer
-        opened={showDrawer}
-        onClose={() => setShowDrawer(false)}
+        opened={showDrawer || isEdit.status}
+        onClose={() => {
+          setShowDrawer(false);
+          setIsEdit({
+            status: false,
+            data: null,
+          });
+        }}
         padding="md"
         size="md"
         position="right"
         closeOnClickOutside={false}
         title={
-          <span className=" font-semibold"> {"Request Document Review"}</span>
+          <span className=" font-semibold">
+            {" "}
+            {isEdit ? "Request Document Review" : "Edit Document Review"}
+          </span>
         }
       >
-        <AddUpdateDocument refetch={get} onClose={() => setShowDrawer(false)} />
+        <AddUpdateDocument
+          data={isEdit.data}
+          isEdit={isEdit.status}
+          refetch={get}
+          onClose={() => {
+            setShowDrawer(false);
+            setIsEdit({
+              status: false,
+              data: null,
+            });
+          }}
+        />
       </Drawer>
       <Drawer
         opened={viewDoc.opened || isReviewing.opened}

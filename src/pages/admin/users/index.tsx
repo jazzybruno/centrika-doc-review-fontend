@@ -4,6 +4,7 @@ import TableSkeleton from "@/components/core/TableSkeleton";
 import AddUpdateUser from "@/components/dashboard/crud/AddUpdateUser";
 import ViewUser from "@/components/dashboard/crud/ViewUser";
 import { DataTable } from "@/components/dashboard/data-table.tsx";
+import { useAuth } from "@/contexts/AuthProvider";
 import useDelete from "@/hooks/useDelete";
 import useGet from "@/hooks/useGet";
 import DashboardLayout from "@/layouts/DashboardLayout";
@@ -29,6 +30,17 @@ const Users = () => {
     data: null as IUser | null,
   });
   const { deleteData, loading: deleteLoading } = useDelete("/users/delete");
+  const { user } = useAuth();
+  const {
+    data: users,
+    loading,
+    error,
+    get,
+  } = useGet<IUser[]>("/users/all", {
+    defaultData: [],
+  });
+  // remove current user from users
+  const filteredUsers = users?.filter((u) => u.id !== user?.id);
 
   const onEdit = (data: IUser) => {
     setIsEdit({
@@ -43,15 +55,6 @@ const Users = () => {
       data,
     });
   };
-
-  const {
-    data: users,
-    loading,
-    error,
-    get,
-  } = useGet<IUser[]>("/users/all", {
-    defaultData: [],
-  });
 
   const columns: ColumnDef<IUser>[] = [
     {
@@ -142,7 +145,7 @@ const Users = () => {
             </Button>
           </div>
         )}
-        {!loading && !error && <DataTable searchKey="username" columns={columns} data={users} />}
+        {!loading && !error && <DataTable searchKey="username" columns={columns} data={filteredUsers} />}
       </div>
       <Drawer
         opened={showDrawer || isEdit.status}
