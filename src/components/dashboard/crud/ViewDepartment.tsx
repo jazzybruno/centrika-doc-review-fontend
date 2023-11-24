@@ -1,6 +1,7 @@
 import { IDepartment, IDocument } from "@/types/base.type";
+import { IUser } from "@/types/user.type";
 import { AuthAPi, getResError } from "@/utils/fetcher";
-import { Divider } from "@mantine/core";
+import { Avatar, Divider } from "@mantine/core";
 import React from "react";
 import { FC } from "react";
 import { AiFillFilePdf } from "react-icons/ai";
@@ -12,6 +13,7 @@ interface Props {
 
 const ViewDepartment: FC<Props> = ({ department }) => {
   const [activeDocuments, setActiveDocuments] = React.useState<IDocument[]>([]);
+  const [usersInDepartment, setUsersInDepartment] = React.useState<IUser[]>([]);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(null);
 
@@ -28,8 +30,22 @@ const ViewDepartment: FC<Props> = ({ department }) => {
     setLoading(false);
   };
 
+  const getUsersInDepartment = async () => {
+    setLoading(true);
+    try {
+      const res = await AuthAPi.get(`/users/department/${department?.id}`);
+      console.log(res);
+      setUsersInDepartment(res.data?.data?.slice(0, 4));
+    } catch (error) {
+      console.log(error);
+      setError(getResError(error));
+    }
+    setLoading(false);
+  };
+
   React.useEffect(() => {
     getActiveDocuments();
+    getUsersInDepartment();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
@@ -60,7 +76,34 @@ const ViewDepartment: FC<Props> = ({ department }) => {
                 <p className="text-sm opacity-80">{doc.createdBy.username}</p>
               </div>
             </div>
-            {i !== activeDocuments.length -1 && <Divider />}
+            {i !== activeDocuments.length - 1 && <Divider />}
+          </>
+        ))}
+      </div>
+      <Divider my={"md"} />
+      <div className="flex w-full gap-y-3 flex-col ">
+        <div className="flex items-center justify-between text-sm font-semibold">
+          <p>Users</p>
+          <Link className=" text-primary" to={"/users"}>
+            View All
+          </Link>
+        </div>
+        {loading && <p>Loading...</p>}
+        {error && <p>{error}</p>}
+        {usersInDepartment.length === 0 && <p>No Users</p>}
+        {usersInDepartment.map((user, i) => (
+          <>
+            <div className="flex w-full items-center gap-x-2">
+              <Avatar
+                src={`https://ui-avatars.com/api/?name=${user.username}+${user.email}&bold=true`}
+                size={"md"}
+              />
+              <div className="flex flex-col">
+                <p className="text-sm font-semibold">{user.username}</p>
+                <p className="text-xs text-primary">{user.email}</p>
+              </div>
+            </div>
+            {i !== usersInDepartment.length - 1 && <Divider />}
           </>
         ))}
       </div>

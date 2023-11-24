@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { LayoutGridIcon, MenuSquareIcon, UserCircleIcon } from "lucide-react";
-import { BiBell } from "react-icons/bi";
+import { BiBell, BiSolidBell } from "react-icons/bi";
 import { FaUsers, FaFile } from "react-icons/fa";
 
 interface Route {
@@ -17,12 +17,12 @@ export const AdminRoutes: Route[] = [
   //   path: "/dashboard",
   // },
   {
-    icon: <FaUsers />,
+    icon: <FaUsers size={20} />,
     name: "Users",
     path: "/users",
   },
   {
-    icon: <MenuSquareIcon />,
+    icon: <MenuSquareIcon className="w-5" />,
     name: "Departments",
     path: "/departments",
   },
@@ -32,7 +32,7 @@ export const AdminRoutes: Route[] = [
     path: "/documents",
   },
   {
-    icon: <BiBell size={20} />,
+    icon: <BiSolidBell size={20} />,
     name: "Notifications",
     path: "/notifications",
     isPublic: true,

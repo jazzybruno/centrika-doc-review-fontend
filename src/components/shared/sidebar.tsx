@@ -77,14 +77,14 @@ const Sidebar = () => {
                   key={index}
                   className="flex side-link duration-150 cursor-pointer items-center gap-x-3 pr-3"
                 >
-                  <span
+                  {/* <span
                     className={`${
                       path === route.path ? "bg-primary" : ""
                     } w-1 duration-300 h-7 rounded-r-lg`}
-                  ></span>
+                  ></span> */}
                   <div
-                    className={`flex duration-300 items-center justify-start rounded-md w-full px-4 py-2.5 ${
-                      path === route.path ? "bg-primary text-white" : ""
+                    className={`flex duration-300 items-center justify-start w-full px-4 py-2.5 ${
+                      path === route.path ? "from-primary/50 bg-gradient-to-r to-white text-primary" : ""
                     }`}
                   >
                     {route.icon}

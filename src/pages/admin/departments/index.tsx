@@ -123,7 +123,7 @@ const Departments = () => {
         padding="md"
         size="md"
         position="right"
-        title={<span className=" font-semibold"> {"Document Overview"}</span>}
+        title={<span className=" font-semibold"> {"Department Overview"}</span>}
       >
         <ViewDepartment department={viewDepartment.data} />
       </Drawer>
