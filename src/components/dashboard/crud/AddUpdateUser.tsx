@@ -142,7 +142,7 @@ const AddUpdateUser: FC<Props> = ({ refetch, onClose, isEdit, user }) => {
         </Input.Wrapper>
         <Input.Wrapper w={"100%"} label="Department" description="Department">
           <AsyncSelect
-            dataUrl="/department/all"
+            selectDataUrl="/department/all"
             value={data.departmentId}
             onChange={(val) => {
               console.log(val);

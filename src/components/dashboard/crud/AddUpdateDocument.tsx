@@ -23,11 +23,11 @@ const AddUpdateDocument: FC<Props> = ({
 }) => {
   const { user } = useAuth();
   const [data, setData] = React.useState({
-    title: toUpdate?.reviewDoc?.title ?? "",
+    title: toUpdate?.currentDocument?.title ?? "",
     reviewer: toUpdate?.reviewers[0]?.id ?? "",
-    departmentId: toUpdate?.reviewDoc?.department?.id ?? "",
-    category: toUpdate?.reviewDoc?.category ?? "",
-    description: toUpdate?.reviewDoc?.description ?? "",
+    departmentId: toUpdate?.currentDocument?.department?.id ?? "",
+    category: toUpdate?.currentDocument?.category ?? "",
+    description: toUpdate?.currentDocument?.description ?? "",
     creator: user?.id ?? "",
   });
   const [file, setFile] = React.useState<File | null>(null);
@@ -161,7 +161,7 @@ const AddUpdateDocument: FC<Props> = ({
         </Input.Wrapper>
         <Input.Wrapper w={"100%"} label="Department" description="Department">
           <AsyncSelect
-            dataUrl="/department/all"
+            selectDataUrl="/department/all"
             value={data.departmentId}
             onChange={(val) => {
               console.log(val);
@@ -176,7 +176,7 @@ const AddUpdateDocument: FC<Props> = ({
           description="Reviewer Name"
         >
           <AsyncSelect
-            dataUrl={
+            selectDataUrl={
               data.departmentId
                 ? `/users/department/${data.departmentId}`
                 : `/users/all`

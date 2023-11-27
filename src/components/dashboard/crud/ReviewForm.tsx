@@ -87,7 +87,7 @@ const ReviewForm: FC<Props> = ({ document, onClose }) => {
         <>
           <Input.Wrapper w={"100%"} label="Department" description="Department">
             <AsyncSelect
-              dataUrl="/department/all"
+              selectDataUrl="/department/all"
               onChange={(val) => {
                 console.log(val);
                 if (!val) return;
@@ -98,7 +98,9 @@ const ReviewForm: FC<Props> = ({ document, onClose }) => {
           <AsyncSelect
             label="Forward To"
             placeholder="Select User"
-            dataUrl={deptId ? `/users/department/${deptId}` : `/users/all`}
+            selectDataUrl={
+              deptId ? `/users/department/${deptId}` : `/users/all`
+            }
             value={review.newReviewerId}
             labelKey="username"
             onChange={(value) => {

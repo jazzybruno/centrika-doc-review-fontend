@@ -61,11 +61,15 @@ const Documents = () => {
     {
       header: "File Name",
       accessorKey: "name",
-      cell: ({ row }) => <h6 className="">{row.original.reviewDoc.title}</h6>,
+      cell: ({ row }) => (
+        <h6 className="">{row.original.currentDocument.title}</h6>
+      ),
     },
     {
       header: "File Url",
-      cell: ({ row }) => <h6 className="">{row.original.reviewDoc.fileUrl}</h6>,
+      cell: ({ row }) => (
+        <h6 className="">{row.original.currentDocument.fileUrl}</h6>
+      ),
     },
     {
       header: "Date Created",

@@ -6,7 +6,7 @@ interface Props {
   label?: string;
   placeholder?: string;
   value?: string;
-  dataUrl: string;
+  selectDataUrl: string;
   accessorKey?: string;
   labelKey?: string;
   onChange?: (e: any) => void;
@@ -20,13 +20,13 @@ const AsyncSelect: FC<Props> = ({
   accessorKey,
   placeholder,
   value,
-  dataUrl,
+  selectDataUrl,
   onChange,
   disabled,
   required,
 }) => {
   const [selected, setSelected] = React.useState(value);
-  const { data, loading, get } = useGet<any[]>(dataUrl, {
+  const { data, loading, get } = useGet<any[]>(selectDataUrl, {
     defaultData: [],
     onMount: false,
   });
@@ -48,10 +48,10 @@ const AsyncSelect: FC<Props> = ({
   }, [accessorKey, data, labelKey, value]);
 
   useEffect(() => {
-    if (!dataUrl) return;
+    if (!selectDataUrl) return;
     get();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataUrl]);
+  }, [selectDataUrl]);
 
   const loadingData = [
     { value: "loading", label: "Loading...", disabled: true },
