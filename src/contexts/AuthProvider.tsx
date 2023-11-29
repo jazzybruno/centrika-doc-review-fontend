@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { IUser } from "@/types/user.type";
 import React, { createContext, useEffect, useState } from "react";
 
@@ -38,22 +36,28 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-      const token = localStorage.getItem('token');
-      if (token && typeof token === 'string') {
-         setToken(token);
-      }
-      setInit(true);
-      getProfile();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const token = localStorage.getItem("token");
+    if (token && typeof token === "string") {
+      setToken(token);
+    }
+    setInit(true);
+    getProfile();
   }, []);
 
   return (
     <AuthContext.Provider value={{ user, token, setToken, setUser }}>
-      {init ? <div className=" h-screen w-full justify-center items-center">Loading ...</div> : children}
+      {init ? (
+        <div className=" h-screen w-full justify-center items-center">
+          Loading ...
+        </div>
+      ) : (
+        children
+      )}
     </AuthContext.Provider>
   );
 };
 
 const useAuth = () => React.useContext(AuthContext);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export { AuthProvider, useAuth };

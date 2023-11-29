@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import { MenuSquareIcon, Nut, UserCircleIcon } from "lucide-react";
 import { BiBell } from "react-icons/bi";
 import { FaFile, FaUsers } from "react-icons/fa";

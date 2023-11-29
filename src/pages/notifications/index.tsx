@@ -60,7 +60,6 @@ const NotificationPage = () => {
   useEffect(() => {
     if (!notifications) return;
     setFilteredList(notifications);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [notifications]);
   return (
     <DashboardLayout>

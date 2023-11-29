@@ -21,8 +21,11 @@ const ViewDocumentReview: FC<Props> = ({
   isReviewing,
   onClose,
 }) => {
+  const currentDocument = doc?.reviewDocList.find(
+    (doc_) => doc_.id === doc.currentDocument
+  );
   const { user } = useAuth();
-  const creator = doc?.currentDocument?.createdBy;
+  const creator = doc?.creator;
   const { data: comments, loading } = useGet(
     `/comments/document-review/${doc?.id}`,
     { defaultData: [] }
@@ -33,6 +36,10 @@ const ViewDocumentReview: FC<Props> = ({
     return url.replace(/\s/g, "%20");
   };
 
+  const otherDocs = doc?.reviewDocList.filter(
+    (doc_) => doc_.id !== doc.currentDocument
+  );
+
   return (
     <div className="flex w-full flex-col overflow-y-auto gap-y-3 pt-11">
       <div className="flex w-full justify-between">
@@ -41,29 +48,27 @@ const ViewDocumentReview: FC<Props> = ({
             <AiFillFilePdf size={25} className="text-red-500 " />
           </button>
           <div className="flex flex-col">
-            <p className="text-sm font-semibold">
-              {doc?.currentDocument?.title}
-            </p>
-            <p className="text-xs text-primary">{doc?.status}</p>
+            <p className="text-sm font-semibold">{currentDocument?.title}</p>
+            <p className="text-xs text-primary">{status}</p>
             <p className="text-sm opacity-80">By {creator?.username}</p>
           </div>
         </div>
         <Link
-          to={`/document/${doc?.currentDocument?.id}`}
-          // download={`${doc?.reviewDoc?.title}`}
+          to={`/document/${currentDocument?.id}`}
+          // download={`${reviewDoc?.title}`}
           className=" p-2 h-fit rounded-3xl disabled:opacity-50 hover:bg-gray-200 duration-300 text-sm font-semibold flex items-center gap-x-2 bg-gray-100 text-primary"
         >
           <AiOutlineCloudDownload />
           View
         </Link>
       </div>
-      {(doc?.reviewDocList?.length as number) > 0 && (
+      {(otherDocs?.length as number) > 0 && (
         <>
           <Divider my={"sm"} />
           <h1>Other docs associated with this request</h1>
         </>
       )}
-      {doc?.reviewDocList.map((doc_) => (
+      {otherDocs?.map((doc_) => (
         <div className="flex w-full justify-between">
           <div className="flex items-center gap-x-2">
             <button className=" p-2 rounded-full bg-gray-100">
