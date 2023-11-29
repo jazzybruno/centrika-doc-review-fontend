@@ -17,7 +17,7 @@ const Documents = () => {
   const [showDrawer, setShowDrawer] = React.useState(false);
   const [viewDoc, setViewDoc] = React.useState({
     opened: false,
-    data: null as any
+    data: null as any,
   });
   const {
     data: documents,
@@ -48,18 +48,12 @@ const Documents = () => {
     {
       header: "category",
       cell: ({ row }) => (
-        <h6 className="">
-          {row.original.category ?? "No category"}
-        </h6>
+        <h6 className="">{row.original.category ?? "No category"}</h6>
       ),
     },
     {
       header: "department",
-      cell: ({ row }) => (
-        <h6 className="">
-          {row.original.department.name}
-        </h6>
-      ),
+      cell: ({ row }) => <h6 className="">{row.original.department.name}</h6>,
     },
     {
       header: "Actions",
@@ -106,7 +100,9 @@ const Documents = () => {
             </Button>
           </div>
         )}
-        {!loading && !error && <DataTable searchKey="title" columns={columns} data={documents} />}
+        {!loading && !error && (
+          <DataTable searchKey="title" columns={columns} data={documents} />
+        )}
       </div>
       <Drawer
         opened={showDrawer}
@@ -120,10 +116,12 @@ const Documents = () => {
       </Drawer>
       <Drawer
         opened={viewDoc.opened}
-        onClose={() => setViewDoc({
-          opened: false,
-          data: null
-        })}
+        onClose={() =>
+          setViewDoc({
+            opened: false,
+            data: null,
+          })
+        }
         padding="md"
         size="md"
         position="right"

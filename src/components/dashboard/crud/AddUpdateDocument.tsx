@@ -22,12 +22,15 @@ const AddUpdateDocument: FC<Props> = ({
   isEdit,
 }) => {
   const { user } = useAuth();
+  const currentDocument = toUpdate?.reviewDocList.find(
+    (doc) => doc.id === toUpdate?.currentDocument
+  );
   const [data, setData] = React.useState({
-    title: toUpdate?.currentDocument?.title ?? "",
+    title: currentDocument?.title ?? "",
     reviewer: toUpdate?.reviewers[0]?.id ?? "",
-    departmentId: toUpdate?.currentDocument?.department?.id ?? "",
-    category: toUpdate?.currentDocument?.category ?? "",
-    description: toUpdate?.currentDocument?.description ?? "",
+    departmentId: currentDocument?.department?.id ?? "",
+    category: currentDocument?.category ?? "",
+    description: currentDocument?.description ?? "",
     creator: user?.id ?? "",
   });
   const [file, setFile] = React.useState<File | null>(null);
@@ -58,7 +61,7 @@ const AddUpdateDocument: FC<Props> = ({
 
     try {
       const response = isEdit
-        ? await AuthAPi.put("/document-reviews", formData, {
+        ? await AuthAPi.put(`/document-reviews/${toUpdate?.id}`, formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
@@ -200,7 +203,7 @@ const AddUpdateDocument: FC<Props> = ({
         mt={8}
         className=" w-full bg-primary text-white"
       >
-        Upload Document
+        {isEdit ? "Update Document" : "Upload Document"}
       </Button>
     </form>
   );

@@ -54,6 +54,7 @@ export interface IDepartment extends IModel {
   name: string;
   description: string;
   createdBy: IUser;
+  departmentHead: IUser | null;
 }
 
 export interface IDocument extends IModel {

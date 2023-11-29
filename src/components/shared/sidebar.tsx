@@ -84,7 +84,9 @@ const Sidebar = () => {
                   ></span> */}
                   <div
                     className={`flex duration-300 items-center justify-start w-full px-4 py-2.5 ${
-                      path === route.path ? "from-primary/50 bg-gradient-to-r to-white text-primary" : ""
+                      path === route.path
+                        ? "from-primary/50 bg-gradient-to-r to-white text-primary"
+                        : ""
                     }`}
                   >
                     {route.icon}
@@ -110,12 +112,12 @@ const Sidebar = () => {
             alt="Banner"
             className="rounded-md object-cover w-full"
           />
-          <div className="flex w-full items-center justify-between hover:bg-[#FAFAFB] p-2 rounded-md gap-x-3">
-            <Link to={"/account"} className="flex flex-1 gap-3 items-center">
+          <div className="flex overflow-hidden items-center justify-between hover:bg-[#FAFAFB] p-2 rounded-md gap-x-3">
+            <Link to={"/account"} className="flex truncate  gap-3 items-center">
               <Avatar src={"/Logo.png"} size={40} radius={"md"} />
               <div className="flex flex-col">
                 <span className="font-semibold text-sm">{user?.username}</span>
-                <span className="text-xs text-muted-foreground truncate max-w-[9em]">
+                <span className="text-xs text-muted-foreground break-words">
                   {user?.email}
                 </span>
               </div>

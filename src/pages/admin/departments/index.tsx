@@ -9,6 +9,7 @@ import { ActionIcon, Button, Drawer } from "@mantine/core";
 import { ColumnDef } from "@tanstack/react-table";
 import React from "react";
 import { AiOutlineReload } from "react-icons/ai";
+import { BiEdit } from "react-icons/bi";
 import { FaEye } from "react-icons/fa";
 
 const Departments = () => {
@@ -24,6 +25,10 @@ const Departments = () => {
     get,
   } = useGet<IDepartment[]>("/department/all", {
     defaultData: [],
+  });
+  const [isEdit, setIsEdit] = React.useState({
+    status: false,
+    data: null as IDepartment | null,
   });
 
   const columns: ColumnDef<IDepartment>[] = [
@@ -51,13 +56,27 @@ const Departments = () => {
         <div className="flex items-center gap-x-3">
           <ActionIcon
             variant="transparent"
-            onClick={() => setViewDepartment({
-              open: true,
-              data: row.row.original,
-            })}
+            onClick={() =>
+              setViewDepartment({
+                open: true,
+                data: row.row.original,
+              })
+            }
           >
             <FaEye />
           </ActionIcon>
+          {/* <ActionIcon
+            variant="transparent"
+            color="black"
+            onClick={() =>
+              setIsEdit({
+                status: true,
+                data: row.row.original,
+              })
+            }
+          >
+            <BiEdit />
+          </ActionIcon> */}
         </div>
       ),
     },
@@ -102,24 +121,36 @@ const Departments = () => {
         )}
       </div>
       <Drawer
-        opened={showDrawer}
-        onClose={() => setShowDrawer(false)}
+        opened={showDrawer || isEdit.status}
+        onClose={() => {
+          setShowDrawer(false);
+          setIsEdit({ status: false, data: null });
+        }}
         padding="md"
         size="md"
         position="right"
-        title={<span className=" font-semibold"> {"Add Department"}</span>}
+        title={
+          <span className=" font-semibold">
+            {isEdit.status ? "Update Department" : "Add Department"}
+          </span>
+        }
       >
         <AddUpdateDepartment
           refetch={get}
-          onClose={() => setShowDrawer(false)}
+          onClose={() => {
+            setShowDrawer(false);
+            setIsEdit({ status: false, data: null });
+          }}
         />
       </Drawer>
       <Drawer
         opened={viewDepartment.open}
-        onClose={() => setViewDepartment({
-          open: false,
-          data: null as any,
-        })}
+        onClose={() =>
+          setViewDepartment({
+            open: false,
+            data: null as any,
+          })
+        }
         padding="md"
         size="md"
         position="right"

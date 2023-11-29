@@ -1,7 +1,9 @@
+import AsyncSelect from "@/components/core/AsyncSelect";
 import { IDepartment, IDocument } from "@/types/base.type";
 import { IUser } from "@/types/user.type";
 import { AuthAPi, getResError } from "@/utils/fetcher";
-import { Avatar, Divider } from "@mantine/core";
+import { Avatar, Button, Divider, Input } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import React from "react";
 import { FC } from "react";
 import { AiFillFilePdf } from "react-icons/ai";
@@ -16,6 +18,7 @@ const ViewDepartment: FC<Props> = ({ department }) => {
   const [usersInDepartment, setUsersInDepartment] = React.useState<IUser[]>([]);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(null);
+  const [deptHead, setDeptHead] = React.useState("");
 
   const getActiveDocuments = async () => {
     setLoading(true);
@@ -39,6 +42,31 @@ const ViewDepartment: FC<Props> = ({ department }) => {
     } catch (error) {
       console.log(error);
       setError(getResError(error));
+    }
+    setLoading(false);
+  };
+
+  const addDepartmentHead = async () => {
+    setLoading(true);
+    try {
+      const res = await AuthAPi.put(
+        `/department/add-head/${department?.id}/${deptHead}`
+      );
+      console.log(res);
+      // setActiveDocuments(res.data?.data?.slice(0, 4));
+      notifications.show({
+        title: "Department Head Added",
+        message: "Department Head Added Successfully",
+        color: "green",
+      });
+    } catch (error) {
+      console.log(error);
+      setError(getResError(error));
+      notifications.show({
+        title: "Department Head Failed",
+        message: getResError(error),
+        color: "red",
+      });
     }
     setLoading(false);
   };
@@ -118,6 +146,66 @@ const ViewDepartment: FC<Props> = ({ department }) => {
           />
           <Avatar>+5</Avatar>
         </Avatar.Group> */}
+      </div>
+      <Divider my={"md"} />
+      <div className="flex w-full gap-y-3 flex-col ">
+        <div className="flex items-center justify-between text-sm font-semibold">
+          <p>Department Head</p>
+        </div>
+        {department?.departmentHead ? (
+          <div className="flex w-full items-center gap-x-2">
+            <Avatar
+              src={`https://ui-avatars.com/api/?name=${department?.departmentHead.username}+${department?.departmentHead.email}&bold=true`}
+              size={"md"}
+            />
+            <div className="flex flex-col">
+              <p className="text-sm font-semibold">
+                {department?.departmentHead?.username}
+              </p>
+              <p className="text-xs text-primary">
+                {department?.departmentHead.email}
+              </p>
+            </div>
+          </div>
+        ) : (
+          <p>No Department Head</p>
+        )}
+        <h1 className=" text-sm font-semibold">Change Department Head</h1>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            addDepartmentHead();
+          }}
+          className="flex gap-y-3 border p-2 rounded-md flex-col w-full"
+        >
+          <Input.Wrapper w={"100%"} label="Department Head">
+            <AsyncSelect
+              selectDataUrl={
+                department?.id
+                  ? `/users/department/${department?.id}`
+                  : `/users/all`
+              }
+              labelKey="username"
+              onChange={(val) => {
+                console.log(val);
+                if (!val) return;
+                setDeptHead(val);
+              }}
+            />
+          </Input.Wrapper>
+          <Button
+            type="submit"
+            loading={loading}
+            disabled={loading}
+            radius="md"
+            w={"100%"}
+            size="md"
+            mt={8}
+            className=" w-full bg-primary text-white"
+          >
+            Submit
+          </Button>
+        </form>
       </div>
       <div className="flex text-sm flex-col gap-y-2">
         <p>Issued On</p>
