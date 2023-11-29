@@ -16,6 +16,7 @@ interface Props {
 const ViewDepartment: FC<Props> = ({ department }) => {
   const [activeDocuments, setActiveDocuments] = React.useState<IDocument[]>([]);
   const [usersInDepartment, setUsersInDepartment] = React.useState<IUser[]>([]);
+  const [departmentHead, setDepartmentHead] = React.useState<IUser | null>(null);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(null);
   const [deptHead, setDeptHead] = React.useState("");
@@ -46,6 +47,19 @@ const ViewDepartment: FC<Props> = ({ department }) => {
     setLoading(false);
   };
 
+  const getDepartmentHead = async () => {
+    setLoading(true);
+    try {
+      const res = await AuthAPi.get(`/users/id/${department?.departmentHead}`);
+      console.log(res);
+      setDepartmentHead(res.data?.data);
+    } catch (error) {
+      console.log(error);
+      setError(getResError(error));
+    }
+    setLoading(false);
+  }
+
   const addDepartmentHead = async () => {
     setLoading(true);
     try {
@@ -74,6 +88,7 @@ const ViewDepartment: FC<Props> = ({ department }) => {
   React.useEffect(() => {
     getActiveDocuments();
     getUsersInDepartment();
+    getDepartmentHead();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
@@ -90,7 +105,7 @@ const ViewDepartment: FC<Props> = ({ department }) => {
           </Link>
         </div>
         {loading && <p>Loading...</p>}
-        {error && <p>{error}</p>}
+        {/* {error && <p>{error}</p>} */}
         {activeDocuments.length === 0 && <p>No Active Documents</p>}
         {activeDocuments.map((doc, i) => (
           <>
@@ -117,7 +132,7 @@ const ViewDepartment: FC<Props> = ({ department }) => {
           </Link>
         </div>
         {loading && <p>Loading...</p>}
-        {error && <p>{error}</p>}
+        {/* {error && <p>{error}</p>} */}
         {usersInDepartment.length === 0 && <p>No Users</p>}
         {usersInDepartment.map((user, i) => (
           <>
@@ -152,18 +167,18 @@ const ViewDepartment: FC<Props> = ({ department }) => {
         <div className="flex items-center justify-between text-sm font-semibold">
           <p>Department Head</p>
         </div>
-        {department?.departmentHead ? (
+        {departmentHead ? (
           <div className="flex w-full items-center gap-x-2">
             <Avatar
-              src={`https://ui-avatars.com/api/?name=${department?.departmentHead.username}+${department?.departmentHead.email}&bold=true`}
+              src={`https://ui-avatars.com/api/?name=${departmentHead.username}+${departmentHead.email}&bold=true`}
               size={"md"}
             />
             <div className="flex flex-col">
               <p className="text-sm font-semibold">
-                {department?.departmentHead?.username}
+                {departmentHead.username}
               </p>
               <p className="text-xs text-primary">
-                {department?.departmentHead.email}
+                {departmentHead.email}
               </p>
             </div>
           </div>

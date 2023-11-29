@@ -73,7 +73,8 @@ export interface IDocumentReview extends IModel {
   comments: any[];
   reviewDocList: IDocument[];
   currentDocument: string;
-  creator: IUser;
+  creator: string;
+  creatorUser: IUser;
 }
 
 export interface INotification extends IModel {

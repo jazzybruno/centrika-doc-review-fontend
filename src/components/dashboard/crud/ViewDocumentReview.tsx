@@ -25,7 +25,7 @@ const ViewDocumentReview: FC<Props> = ({
     (doc_) => doc_.id === doc.currentDocument
   );
   const { user } = useAuth();
-  const creator = doc?.creator;
+  const creator = doc?.creatorUser;
   const { data: comments, loading } = useGet(
     `/comments/document-review/${doc?.id}`,
     { defaultData: [] }
