@@ -13,7 +13,7 @@ export const AuthAPi = axios.create({
     (import.meta.env.VITE_API_URL as string) ??
     "http://194.163.167.131:8800/api",
   headers: {
-    Authorization: `Bearer ${localStorage.getItem("token")}`,
+    Authorization: `Bearer ${sessionStorage.getItem("token")}`,
   },
 });
 

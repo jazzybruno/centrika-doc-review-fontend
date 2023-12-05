@@ -1,50 +1,177 @@
-import { useState, useEffect } from "react";
-import { useAuth } from "@/contexts/AuthProvider";
+import TableSkeleton from "@/components/core/TableSkeleton";
+import AddUpdateReferenceNumber from "@/components/dashboard/crud/AddUpdateReferenceNumber";
+import ViewReferenceNumber from "@/components/dashboard/crud/ViewReferenceNumber";
+import { DataTable } from "@/components/dashboard/data-table.tsx";
+import useGet from "@/hooks/useGet";
 import DashboardLayout from "@/layouts/DashboardLayout";
-import { Input, InputWrapper } from "@mantine/core";
+import { IReferenceNumber } from "@/types/base.type";
+import { ActionIcon, Button, Drawer } from "@mantine/core";
+import { ColumnDef } from "@tanstack/react-table";
 import React from "react";
-import axios from "axios";
-import { AuthAPi } from "@/utils/fetcher";
+import { AiOutlineReload } from "react-icons/ai";
+import { FaEye } from "react-icons/fa";
 
-const ReferenceIndex = () => {
-  const { user } = useAuth();
-  const [count, setCount] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const referenceNumber = 45; // Set your initial reference number here
-  const interval = 3000; // Update every 3 seconds
+const ReferenceNumbers = () => {
+  const [showDrawer, setShowDrawer] = React.useState(false);
+  const [viewReferenceNumber, setViewReferenceNumber] = React.useState({
+    open: false,
+    data: null as any,
+  });
+  const {
+    data: referenceNumbers,
+    loading,
+    error,
+    get,
+  } = useGet<IReferenceNumber[]>("/reference-numbers", {
+    defaultData: [],
+  });
+  const [isEdit, setIsEdit] = React.useState({
+    status: false,
+    data: null as IReferenceNumber | null,
+  });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await AuthAPi.get('/document/reference-number');
-        const apiReferenceNumber = response.data.data; // Adjust this based on your API response structure
-        setCount(apiReferenceNumber);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching reference number:", error);
-      }
-    };
-
-    fetchData();
-
-    // Set up interval to fetch data every 3 seconds
-    const intervalId = setInterval(fetchData, interval);
-
-    // Clear the interval on component unmount
-    return () => clearInterval(intervalId);
-  }, []);
+  const columns: ColumnDef<IReferenceNumber>[] = [
+    {
+      header: "Title",
+      accessorKey: "title",
+      cell: (row: any) => <h6 className="">{row.getValue("title")}</h6>,
+    },
+    {
+      header: "Destination",
+      accessorKey: "destination",
+      cell: (row: any) => <h6 className="">{row.getValue("destination")}</h6>,
+    },
+    {
+      header: "Status",
+      accessorKey: "status",
+      cell: (row: any) => <h6 className="">{row.getValue("status")}</h6>,
+    },
+    {
+      header: "Created By",
+      accessorKey: "createdBy",
+      cell: (row: any) => (
+        <h6 className="">{row.getValue("createdBy").username}</h6>
+      ),
+    },
+    {
+      header: "Actions",
+      accessorKey: "class",
+      cell: (row) => (
+        <div className="flex items-center gap-x-3">
+          <ActionIcon
+            variant="transparent"
+            onClick={() =>
+              setViewReferenceNumber({
+                open: true,
+                data: row.row.original,
+              })
+            }
+          >
+            <FaEye />
+          </ActionIcon>
+          {/* Uncomment the below code if you want to enable editing
+          <ActionIcon
+            variant="transparent"
+            color="black"
+            onClick={() =>
+              setIsEdit({
+                status: true,
+                data: row.row.original,
+              })
+            }
+          >
+            <BiEdit />
+          </ActionIcon>
+          */}
+        </div>
+      ),
+    },
+  ];
 
   return (
-    <DashboardLayout>
-      <div className="w-full h-full flex p-4 flex-co justify-center items-center">
-        {loading ? (
-          <div>Loading...</div>
-        ) : (
-          <div className="font-montserrat font-extrabold text-[10em]">#{count}</div>
+    <DashboardLayout
+      right={
+        <Button
+          size="md"
+          onClick={() => setShowDrawer(true)}
+          radius={"md"}
+          className=" duration-300"
+        >
+          + Add Reference Number
+        </Button>
+      }
+    >
+      <div className="flex w-full flex-col p-3">
+        {loading && <TableSkeleton columns={columns} />}
+        {error && (
+          <div className="flex flex-col items-center w-full">
+            <span className="flex items-center justify-center text-red-700 text-sm">
+              {error}
+            </span>
+            <Button
+              onClick={get}
+              mt={3}
+              className="flex items-center gap-x-2"
+              px={3}
+            >
+              <AiOutlineReload
+                size={20}
+                className={`mr-2 ${loading ? "animate-spin" : ""}`}
+              />
+              Retry
+            </Button>
+          </div>
+        )}
+        {!loading && !error && (
+          <DataTable
+            searchKey="name"
+            columns={columns}
+            data={referenceNumbers}
+          />
         )}
       </div>
+      <Drawer
+        opened={showDrawer || isEdit.status}
+        onClose={() => {
+          setShowDrawer(false);
+          setIsEdit({ status: false, data: null });
+        }}
+        padding="md"
+        size="md"
+        position="right"
+        title={
+          <span className=" font-semibold">
+            {isEdit.status ? "Update Reference Number" : "Add Reference Number"}
+          </span>
+        }
+      >
+        <AddUpdateReferenceNumber
+          refetch={get}
+          onClose={() => {
+            setShowDrawer(false);
+            setIsEdit({ status: false, data: null });
+          }}
+        />
+      </Drawer>
+      <Drawer
+        opened={viewReferenceNumber.open}
+        onClose={() =>
+          setViewReferenceNumber({
+            open: false,
+            data: null as any,
+          })
+        }
+        padding="md"
+        size="md"
+        position="right"
+        title={
+          <span className=" font-semibold"> {"Reference Number Overview"}</span>
+        }
+      >
+        <ViewReferenceNumber referenceNumber={viewReferenceNumber.data} />
+      </Drawer>
     </DashboardLayout>
   );
 };
 
-export default ReferenceIndex;
+export default ReferenceNumbers;

@@ -87,3 +87,11 @@ export interface IComment extends IModel {
   commentCreator: IUser;
   documentReview: IDocumentReview;
 }
+
+export interface IReferenceNumber {
+  title: string;
+  destination: string;
+  status: string;
+  createdBy: IUser;
+  referenceNumber: string;
+}

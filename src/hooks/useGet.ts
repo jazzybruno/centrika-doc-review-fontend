@@ -1,7 +1,7 @@
-import { ApiResponse, IPaginatedQuery, IPagination } from '@/types/base.type';
-import { AuthAPi, api, getResError } from '@/utils/fetcher';
-import { notifications } from '@mantine/notifications';
-import { useEffect, useState } from 'react';
+import { ApiResponse, IPaginatedQuery, IPagination } from "@/types/base.type";
+import { AuthAPi, api, getResError } from "@/utils/fetcher";
+import { notifications } from "@mantine/notifications";
+import { useEffect, useState } from "react";
 
 type Opts = {
   /**
@@ -24,7 +24,9 @@ export default function useGet<T = any>(url: string, options?: Opts) {
   const [data, setData] = useState<T | null>(defaultData ?? null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [paginateOpts, setPaginateOpts] = useState<IPaginatedQuery & { totalPages: number }>({
+  const [paginateOpts, setPaginateOpts] = useState<
+    IPaginatedQuery & { totalPages: number }
+  >({
     limit: 10,
     page: 0,
     totalPages: 1,
@@ -33,17 +35,19 @@ export default function useGet<T = any>(url: string, options?: Opts) {
   async function get() {
     setLoading(true);
     setError(null);
-    console.log('useGet url', url);
+    console.log("useGet url", url);
     try {
       const response = await AuthAPi.get<ApiResponse<T>>(url);
+      console.log("useGet response", response.data);
       setData(response.data?.data);
+      console.log("useGet data", JSON.parse(JSON.stringify(response.data)));
     } catch (error: any) {
       const err = getResError(error);
-      console.log('useGet error', err);
+      console.log("useGet error", err);
       notifications.show({
-        title: 'Failed to get data',
+        title: "Failed to get data",
         message: err,
-        color: 'red',
+        color: "red",
         autoClose: 3000,
       });
       setError(err.toString());
@@ -59,17 +63,20 @@ export default function useGet<T = any>(url: string, options?: Opts) {
       const response = await AuthAPi.get(pagination?.url ?? url, {
         params: paginateOpts,
       });
-      console.log('getPaginated', response.data);
+      console.log("getPaginated", response.data);
       const data: IPagination = response.data?.data ?? response.data;
       setData((data?.content as any) ?? defaultData);
-      setPaginateOpts((prev) => ({ ...prev, totalPages: data?.totalPages ?? 0 }));
+      setPaginateOpts((prev) => ({
+        ...prev,
+        totalPages: data?.totalPages ?? 0,
+      }));
     } catch (error: any) {
       const err = getResError(error);
-      console.log('useGet error', err);
+      console.log("useGet error", error);
       notifications.show({
-        title: 'Failed to get data',
+        title: "Failed to get data",
         message: err,
-        color: 'red',
+        color: "red",
         autoClose: 3000,
       });
       setError(err.toString());
@@ -89,5 +96,14 @@ export default function useGet<T = any>(url: string, options?: Opts) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paginateOpts.page, paginateOpts.limit]);
 
-  return { data, loading, error, get, setData, paginateOpts, setPaginateOpts, getPaginated };
+  return {
+    data,
+    loading,
+    error,
+    get,
+    setData,
+    paginateOpts,
+    setPaginateOpts,
+    getPaginated,
+  };
 }
