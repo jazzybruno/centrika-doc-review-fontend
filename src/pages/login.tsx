@@ -30,30 +30,31 @@ export default function Login() {
       });
       if (res.data) {
         const user = res.data.data?.user;
-        localStorage.setItem("token", res.data.data?.accessToken);
-        localStorage.setItem("user", JSON.stringify(user));
-        const nextUrl = user?.roles[0].roleName === "ADMIN" ? "/account" : "/account";
+        sessionStorage.setItem("token", res.data.data?.accessToken);
+        sessionStorage.setItem("user", JSON.stringify(user));
+        const nextUrl =
+          user?.roles[0].roleName === "ADMIN" ? "/account" : "/account";
         window.location.href = nextUrl;
       }
     } catch (error) {
       console.log(error);
-        notifications.show({
-            title: "Login Failed",
-            message: getResError(error),
-            color: "red",
-            autoClose: 3000,
-        });
+      notifications.show({
+        title: "Login Failed",
+        message: getResError(error),
+        color: "red",
+        autoClose: 3000,
+      });
     }
     setLoading(false);
   };
-  const token = localStorage.getItem("token");
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const token = sessionStorage.getItem("token");
+  const user = JSON.parse(sessionStorage.getItem("user") || "{}");
 
-    if (token && user?.roles[0].roleName === "ADMIN") {
-        return <Navigate to="/account" />;
-    } else if (token) {
-        return <Navigate to="/user/documents" />;
-    }
+  if (token && user?.roles[0].roleName === "ADMIN") {
+    return <Navigate to="/account" />;
+  } else if (token) {
+    return <Navigate to="/user/documents" />;
+  }
 
   return (
     <main className="bg-foreground w-screen h-screen">

@@ -33,8 +33,8 @@ const Sidebar = () => {
   }, []);
 
   const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("user");
     window.location.href = "/";
   };
 

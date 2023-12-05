@@ -24,7 +24,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const getProfile = async () => {
     try {
-      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      const user = JSON.parse(sessionStorage.getItem("user") || "{}");
       if (user) {
         setUser(user);
       }
@@ -36,7 +36,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     if (token && typeof token === "string") {
       setToken(token);
     }
