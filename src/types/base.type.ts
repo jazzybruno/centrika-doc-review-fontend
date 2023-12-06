@@ -61,9 +61,9 @@ export interface IDocument extends IModel {
   title: string;
   description: string;
   fileUrl: string;
-  category: string;
-  status: string;
-  referenceNumber: number;
+  category: "INTERNAL" | "EXTERNAL";
+  status: "PENDING" | "APPROVED" | "REJECTED";
+  referenceNumber: IReferenceNumber;
   createdBy: IUser;
   department: IDepartment;
 }
@@ -88,10 +88,15 @@ export interface IComment extends IModel {
   documentReview: IDocumentReview;
 }
 
-export interface IReferenceNumber {
+export interface IReferenceNumber extends IModel {
   title: string;
   destination: string;
   status: string;
   createdBy: IUser;
   referenceNumber: string;
+}
+
+export interface DepartmentHead extends IModel {
+  userId: IUser;
+  departmentId: IDepartment;
 }

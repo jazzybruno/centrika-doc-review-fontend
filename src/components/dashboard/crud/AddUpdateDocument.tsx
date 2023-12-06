@@ -1,9 +1,9 @@
 import AsyncSelect from "@/components/core/AsyncSelect";
 import UploadArea from "@/components/core/UploadArea";
 import { useAuth } from "@/contexts/AuthProvider";
-import { IDocumentReview } from "@/types/base.type";
+import { IDocument, IDocumentReview } from "@/types/base.type";
 import { AuthAPi, getResError } from "@/utils/fetcher";
-import { Button, Input, Select, Textarea } from "@mantine/core";
+import { Button, Input, Select, Switch, Textarea } from "@mantine/core";
 import { PDF_MIME_TYPE } from "@mantine/dropzone";
 import { notifications } from "@mantine/notifications";
 import React, { FC } from "react";
@@ -11,7 +11,7 @@ import React, { FC } from "react";
 interface Props {
   refetch: () => void;
   onClose: () => void;
-  data?: IDocumentReview | null;
+  data?: IDocument | null;
   isEdit?: boolean;
 }
 
@@ -22,13 +22,13 @@ const AddUpdateDocument: FC<Props> = ({
   isEdit,
 }) => {
   const { user } = useAuth();
-  const currentDocument = toUpdate?.reviewDocList.find(
-    (doc) => doc.id === toUpdate?.currentDocument
-  );
+  const currentDocument = toUpdate;
   const [data, setData] = React.useState({
     title: currentDocument?.title ?? "",
-    reviewer: toUpdate?.reviewers[0]?.id ?? "",
-    departmentId: currentDocument?.department?.id ?? "",
+    // reviewer: toUpdate?.reviewers[0]?.id ?? "",
+    referenceNumberId: currentDocument?.referenceNumber?.id ?? "",
+    relationshipType: "",
+    parentDocumentId: "",
     category: currentDocument?.category ?? "",
     description: currentDocument?.description ?? "",
     creator: user?.id ?? "",
@@ -36,6 +36,7 @@ const AddUpdateDocument: FC<Props> = ({
   const [file, setFile] = React.useState<File | null>(null);
   const [error, setError] = React.useState<any>(null);
   const [loading, setLoading] = React.useState(false);
+  const [hsPrevDoc, setHsPrevDoc] = React.useState(false);
 
   const handleFileChange = (files: File[]) => {
     console.log(files);
@@ -51,22 +52,24 @@ const AddUpdateDocument: FC<Props> = ({
       return;
     }
     // Append the file to the form data
-    formData.append("file", file);
+    formData.append("docFile", file);
     formData.append("title", data.title);
     formData.append("description", data.description);
     formData.append("category", data.category);
-    formData.append("departmentId", data?.departmentId);
+    // formData.append("departmentId", data?.departmentId);
     formData.append("creator", data.creator);
-    formData.append("reviewer", data.reviewer);
+    formData.append("relationshipType", data.relationshipType);
+    formData.append("referenceNumberId", data.referenceNumberId);
+    formData.append("parentDocumentId", data.parentDocumentId);
 
     try {
       const response = isEdit
-        ? await AuthAPi.put(`/document-reviews/${toUpdate?.id}`, formData, {
+        ? await AuthAPi.put(`/documents/${toUpdate?.id}`, formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
           })
-        : await AuthAPi.post("/document-reviews/request", formData, {
+        : await AuthAPi.post("/documents/create", formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
@@ -162,36 +165,61 @@ const AddUpdateDocument: FC<Props> = ({
             }}
           />
         </Input.Wrapper>
-        <Input.Wrapper w={"100%"} label="Department" description="Department">
-          <AsyncSelect
-            selectDataUrl="/department/all"
-            value={data.departmentId}
-            onChange={(val) => {
-              console.log(val);
-              if (!val) return;
-              setData({ ...data, departmentId: val });
-            }}
+        {data.category === "EXTERNAL" && (
+          <Input.Wrapper
+            w={"100%"}
+            label="Reference Number"
+            description="Reference Number"
+          >
+            <AsyncSelect
+              selectDataUrl={`/reference-numbers/by-user/${user?.id}`}
+              value={data.referenceNumberId}
+              onChange={(val) => {
+                console.log(val);
+                if (!val) return;
+                setData({ ...data, referenceNumberId: val });
+              }}
+              labelKey="referenceNumber"
+            />
+          </Input.Wrapper>
+        )}
+        <div className="flex justify-between items-center">
+          <span>Does it have a previous document?</span>
+          <Switch
+            checked={hsPrevDoc}
+            onChange={() => setHsPrevDoc((prev) => !prev)}
           />
-        </Input.Wrapper>
-        <Input.Wrapper
-          w={"100%"}
-          label="Reviewer Name"
-          description="Reviewer Name"
-        >
-          <AsyncSelect
-            selectDataUrl={
-              data.departmentId
-                ? `/users/department/${data.departmentId}`
-                : `/users/all`
-            }
-            labelKey="username"
-            onChange={(val) => {
-              console.log(val);
-              if (!val) return;
-              setData({ ...data, reviewer: val });
-            }}
-          />
-        </Input.Wrapper>
+        </div>
+        {hsPrevDoc && (
+          <>
+            <Input.Wrapper
+              label="Relationship"
+              description="Relationship with previous document"
+            >
+              <Select
+                mt={6}
+                defaultValue={data.relationshipType}
+                data={["VERSION", "RESPONSE"]}
+                onChange={(val) => {
+                  if (!val) return;
+                  setData({ ...data, relationshipType: val });
+                }}
+              />
+            </Input.Wrapper>
+            <Input.Wrapper label="Select Document">
+              <AsyncSelect
+                selectDataUrl={`/documents/by-user/${user?.id}`}
+                value={data.parentDocumentId}
+                onChange={(val) => {
+                  console.log(val);
+                  if (!val) return;
+                  setData({ ...data, parentDocumentId: val });
+                }}
+                labelKey="title"
+              />
+            </Input.Wrapper>
+          </>
+        )}
       </div>
       <Button
         type="submit"

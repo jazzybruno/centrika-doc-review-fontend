@@ -1,4 +1,5 @@
 import { useAuth } from "@/contexts/AuthProvider";
+import { IReferenceNumber } from "@/types/base.type";
 import { AuthAPi, getResError } from "@/utils/fetcher";
 import { Button, Input, Select } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
@@ -7,15 +8,22 @@ import React, { FC } from "react";
 interface Props {
   refetch: () => void;
   onClose: () => void;
+  isEdit?: boolean;
+  referenceNumber?: IReferenceNumber | null;
 }
 
-const AddUpdateReferenceNumber: FC<Props> = ({ refetch, onClose }) => {
+const AddUpdateReferenceNumber: FC<Props> = ({
+  refetch,
+  onClose,
+  isEdit,
+  referenceNumber,
+}) => {
   const { user } = useAuth();
   const [data, setData] = React.useState({
-    title: "",
-    destination: "",
-    status: "ACTIVE",
-    createdBy: user?.id ?? "",
+    title: referenceNumber?.title ?? "",
+    destination: referenceNumber?.destination ?? "",
+    status: referenceNumber?.status ?? "ACTIVE",
+    createdBy: referenceNumber?.createdBy.id ?? user?.id ?? "",
   });
   const [loading, setLoading] = React.useState(false);
 
@@ -62,9 +70,55 @@ const AddUpdateReferenceNumber: FC<Props> = ({ refetch, onClose }) => {
     setLoading(false);
   };
 
+  const updateReferenceNumber = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      if (referenceNumber?.status !== data.status) {
+        const res = await AuthAPi.put(
+          `/reference-numbers/update-status/${referenceNumber?.id}?status=${data.status}`
+        );
+        console.log(res);
+        if (res.data) {
+          notifications.show({
+            title: "Update Reference Number Status Success",
+            message: "Update Reference Number Status Success",
+            color: "green",
+            autoClose: 3000,
+          });
+        }
+      }
+      if (referenceNumber?.destination !== data.destination) {
+        const res = await AuthAPi.put(
+          `/reference-numbers/update-destination/${referenceNumber?.id}?destination=${data.destination}`
+        );
+        console.log(res);
+        if (res.data) {
+          notifications.show({
+            title: "Update Reference Number Destination Success",
+            message: "Update Reference Number Destination Success",
+            color: "green",
+            autoClose: 3000,
+          });
+        }
+      }
+      refetch();
+      onClose();
+    } catch (error) {
+      console.log(error);
+      notifications.show({
+        title: "Update Reference Number Failed",
+        message: getResError(error),
+        color: "red",
+        autoClose: 3000,
+      });
+    }
+    setLoading(false);
+  };
+
   return (
     <form
-      onSubmit={onSubmit}
+      onSubmit={isEdit ? updateReferenceNumber : onSubmit}
       className=" w-full flex-col flex gap-y-4 py-4 items-center"
     >
       <div className="flex mt-5 w-full flex-col gap-y-4">
@@ -75,6 +129,8 @@ const AddUpdateReferenceNumber: FC<Props> = ({ refetch, onClose }) => {
             }
             required
             placeholder="Title"
+            disabled={isEdit}
+            value={data.title}
             p={2}
             variant="filled"
             size="md"
@@ -85,6 +141,8 @@ const AddUpdateReferenceNumber: FC<Props> = ({ refetch, onClose }) => {
             onChange={(e) =>
               setData((prev) => ({ ...prev, destination: e.target.value }))
             }
+            value={data.destination}
+            disabled={isEdit}
             required
             placeholder="Destination"
             p={2}
@@ -92,6 +150,23 @@ const AddUpdateReferenceNumber: FC<Props> = ({ refetch, onClose }) => {
             size="md"
           />
         </Input.Wrapper>
+        {isEdit && (
+          <Select
+            value={data.status}
+            onChange={(e) => {
+              if (!e) return;
+              setData((prev) => ({ ...prev, status: e }));
+            }}
+            label="Status"
+            placeholder="Select Status"
+            required
+            data={[
+              { value: "ACTIVE", label: "ACTIVE" },
+              { value: "INACTIVE", label: "INACTIVE" },
+            ]}
+            className="w-full"
+          />
+        )}
       </div>
       <Button
         type="submit"
@@ -103,7 +178,7 @@ const AddUpdateReferenceNumber: FC<Props> = ({ refetch, onClose }) => {
         mt={8}
         className=" w-full bg-primary text-white"
       >
-        Add Reference Number
+        {isEdit ? "Update Status" : "Book Reference Number"}
       </Button>
     </form>
   );

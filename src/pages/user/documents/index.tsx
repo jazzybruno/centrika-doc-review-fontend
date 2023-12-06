@@ -5,13 +5,14 @@ import { DataTable } from "@/components/dashboard/data-table.tsx";
 import { useAuth } from "@/contexts/AuthProvider";
 import useGet from "@/hooks/useGet";
 import DashboardLayout from "@/layouts/DashboardLayout";
-import { IDocumentReview } from "@/types/base.type";
+import { IDocument } from "@/types/base.type";
 import { getStatusColor } from "@/utils/funcs";
 import {
   ActionIcon,
   Badge,
   Button,
   Drawer,
+  Overlay,
   SegmentedControl,
   Tooltip,
 } from "@mantine/core";
@@ -24,17 +25,18 @@ import { BiEdit, BiSolidMessageSquareDetail, BiTrash } from "react-icons/bi";
 const Documents = () => {
   const [showDrawer, setShowDrawer] = React.useState(false);
   const [reqType, setReqType] = React.useState("mine");
+  const [docType, setDocType] = React.useState("internal");
   const [isReviewing, setIsReviewing] = React.useState({
     opened: false,
-    data: null as IDocumentReview | null,
+    data: null as IDocument | null,
   });
   const [viewDoc, setViewDoc] = React.useState({
     opened: false,
-    data: null as IDocumentReview | null,
+    data: null as IDocument | null,
   });
   const [isEdit, setIsEdit] = React.useState({
     status: false,
-    data: null as IDocumentReview | null,
+    data: null as IDocument | null,
   });
   const { user } = useAuth();
   const {
@@ -42,39 +44,31 @@ const Documents = () => {
     get,
     loading,
     error,
-  } = useGet<IDocumentReview[]>(
-    reqType === "mine"
-      ? `/document-reviews/sender/${user?.id}`
-      : `/document-reviews/reviewer/${user?.id}`,
-    {
-      defaultData: [],
-      onMount: false,
-    }
-  );
+  } = useGet<IDocument[]>("/documents", {
+    defaultData: [],
+    onMount: false,
+  });
+  const [filteredList, setFilteredList] = React.useState(documents);
 
   useEffect(() => {
-    get();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    //
   }, [reqType]);
 
-  const columns: ColumnDef<IDocumentReview>[] = [
-    {
-      header: "File Name",
-      accessorKey: "name",
-      cell: ({ row }) => {
-        const currentDocument = row.original.reviewDocList.find(
-          (doc_) => doc_.id === row.original.currentDocument
-        );
-        return <h6 className="">{currentDocument?.title}</h6>;
-      },
-    },
+  const columns: ColumnDef<IDocument>[] = [
+    // {
+    //   header: "File Name",
+    //   accessorKey: "name",
+    //   cell: ({ row }) => {
+    //     const currentDocument = row.original.reviewDocList.find(
+    //       (doc_) => doc_.id === row.original.currentDocument
+    //     );
+    //     return <h6 className="">{currentDocument?.title}</h6>;
+    //   },
+    // },
     {
       header: "File Url",
       cell: ({ row }) => {
-        const currentDocument = row.original.reviewDocList.find(
-          (doc_) => doc_.id === row.original.currentDocument
-        );
-        return <h6 className="">{currentDocument?.fileUrl}</h6>;
+        return <h6 className="">{row.original?.fileUrl}</h6>;
       },
     },
     {
@@ -128,7 +122,7 @@ const Documents = () => {
               <BiEdit />
             </ActionIcon>
           )}
-          {reqType !== "mine" && (
+          {/* {reqType !== "mine" && (
             <Tooltip label="Review">
               <ActionIcon
                 variant="transparent"
@@ -143,8 +137,8 @@ const Documents = () => {
                 <BiSolidMessageSquareDetail />
               </ActionIcon>
             </Tooltip>
-          )}
-          {reqType === "mine" && (
+          )} */}
+          {/* {reqType === "mine" && (
             <ActionIcon
               // onClick={() => onDelete(row.original)}
               variant="transparent"
@@ -153,11 +147,18 @@ const Documents = () => {
             >
               <BiTrash />
             </ActionIcon>
-          )}
+          )} */}
         </div>
       ),
     },
   ];
+
+  useEffect(() => {
+    const newDocuments = documents?.filter(
+      (doc) => doc.category === docType.toUpperCase()
+    );
+    if (newDocuments) setFilteredList(newDocuments);
+  }, [docType, documents]);
 
   return (
     <DashboardLayout
@@ -168,18 +169,34 @@ const Documents = () => {
           radius={"md"}
           className=" duration-300"
         >
-          Request Document
+          Upload Document
         </Button>
       }
     >
-      <SegmentedControl
-        w={300}
-        onChange={(value) => setReqType(value)}
-        data={[
-          { value: "mine", label: "My Requests" },
-          { value: "to-me", label: "Requested to me" },
-        ]}
-      />
+      <div className="flex w-full justify-between">
+        <div className="flex flex-col gap-y-1">
+          <h1 className=" px-2 text-sm font-medium">By Category</h1>
+          <SegmentedControl
+            w={300}
+            onChange={(value) => setDocType(value)}
+            data={[
+              { value: "internal", label: "INTERNAL" },
+              { value: "external", label: "EXTERNAL" },
+            ]}
+          />
+        </div>
+        <div className="flex flex-col gap-y-1">
+          <h1 className=" px-2 text-sm font-medium">By Review</h1>
+          <SegmentedControl
+            w={300}
+            onChange={(value) => setReqType(value)}
+            data={[
+              { value: "requested", label: "Requested" },
+              { value: "to-me", label: "Requested to Me" },
+            ]}
+          />
+        </div>
+      </div>
       <div className="flex w-full flex-col p-3">
         {loading && <TableSkeleton columns={columns} />}
         {error && (
@@ -205,7 +222,7 @@ const Documents = () => {
           <DataTable
             searchKey="name"
             columns={columns}
-            data={documents?.reverse()}
+            data={filteredList?.reverse()}
           />
         )}
       </div>
@@ -224,8 +241,7 @@ const Documents = () => {
         closeOnClickOutside={false}
         title={
           <span className=" font-semibold">
-            {" "}
-            {isEdit ? "Request Document Review" : "Edit Document Review"}
+            {isEdit ? "Edit/Upload Document" : "Upload Document"}
           </span>
         }
       >
@@ -242,29 +258,12 @@ const Documents = () => {
           }}
         />
       </Drawer>
-      <Drawer
-        opened={viewDoc.opened || isReviewing.opened}
-        onClose={() => {
-          setViewDoc({
-            opened: false,
-            data: null,
-          });
-          setIsReviewing({
-            opened: false,
-            data: null,
-          });
-        }}
-        closeOnClickOutside={!isReviewing.opened}
-        padding="md"
-        size="md"
-        position="right"
-        title={<span className=" font-semibold"> {"Document Overview"}</span>}
-      >
+      {(viewDoc.opened || isReviewing.opened) && (
         <ViewDocumentReview
           document={viewDoc.data ?? isReviewing.data}
           isReviewing={isReviewing.opened}
+          refresh={get}
           onClose={() => {
-            get();
             setViewDoc({
               opened: false,
               data: null,
@@ -275,7 +274,7 @@ const Documents = () => {
             });
           }}
         />
-      </Drawer>
+      )}
     </DashboardLayout>
   );
 };

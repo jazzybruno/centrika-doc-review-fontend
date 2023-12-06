@@ -1,5 +1,7 @@
 import axios from "axios";
 
+export const baseUrl = import.meta.env.VITE_API_URL as string;
+
 export const api = axios.create({
   baseURL:
     (import.meta.env.VITE_API_URL as string) ??
@@ -22,6 +24,9 @@ export const getResError = (error?: any) => {
   const isNetError = error?.message?.includes("Network Error");
   if (isNetError) return "Network Error";
   return (
-    error?.response?.data?.message ?? error?.message ?? "Something Went Wrong"
+    error?.response?.data?.error ??
+    error?.response?.data?.message ??
+    error?.message ??
+    "Something Went Wrong"
   );
 };
