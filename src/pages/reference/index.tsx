@@ -1,7 +1,10 @@
+import MainModal from "@/components/core/MainModal";
 import TableSkeleton from "@/components/core/TableSkeleton";
 import AddUpdateReferenceNumber from "@/components/dashboard/crud/AddUpdateReferenceNumber";
 import ViewReferenceNumber from "@/components/dashboard/crud/ViewReferenceNumber";
 import { DataTable } from "@/components/dashboard/data-table.tsx";
+import { useAuth } from "@/contexts/AuthProvider";
+import useDelete from "@/hooks/useDelete";
 import useGet from "@/hooks/useGet";
 import DashboardLayout from "@/layouts/DashboardLayout";
 import { IReferenceNumber } from "@/types/base.type";
@@ -9,23 +12,42 @@ import { ActionIcon, Button, Drawer } from "@mantine/core";
 import { ColumnDef } from "@tanstack/react-table";
 import React from "react";
 import { AiOutlineReload } from "react-icons/ai";
+import { BiEdit, BiTrashAlt } from "react-icons/bi";
 import { FaEye } from "react-icons/fa";
 
 const ReferenceNumbers = () => {
+  const { user } = useAuth();
   const [showDrawer, setShowDrawer] = React.useState(false);
   const [viewReferenceNumber, setViewReferenceNumber] = React.useState({
     open: false,
     data: null as any,
   });
+  const isAdmin = user?.roles.some((role) => role.roleName === "ADMIN");
   const {
     data: referenceNumbers,
     loading,
     error,
     get,
-  } = useGet<IReferenceNumber[]>("/reference-numbers", {
-    defaultData: [],
-  });
+  } = useGet<IReferenceNumber[]>(
+    `${
+      !isAdmin ? `/reference-numbers/by-user/${user?.id}` : `/reference-numbers`
+    }`,
+    {
+      defaultData: [],
+    }
+  );
   const [isEdit, setIsEdit] = React.useState({
+    status: false,
+    data: null as IReferenceNumber | null,
+  });
+  const { deleteData, loading: loadingDelete } = useDelete(
+    `/reference-numbers`,
+    {
+      customError:
+        "You cannot delete this reference number because it is expired/not the latest reference number.",
+    }
+  );
+  const [showDelete, setShowDelete] = React.useState({
     status: false,
     data: null as IReferenceNumber | null,
   });
@@ -47,10 +69,10 @@ const ReferenceNumbers = () => {
       cell: (row: any) => <h6 className="">{row.getValue("status")}</h6>,
     },
     {
-      header: "Created By",
-      accessorKey: "createdBy",
+      header: "Reference Number",
+      accessorKey: "referenceNumber",
       cell: (row: any) => (
-        <h6 className="">{row.getValue("createdBy").username}</h6>
+        <h6 className="">{row.getValue("referenceNumber")}</h6>
       ),
     },
     {
@@ -69,20 +91,36 @@ const ReferenceNumbers = () => {
           >
             <FaEye />
           </ActionIcon>
-          {/* Uncomment the below code if you want to enable editing
-          <ActionIcon
-            variant="transparent"
-            color="black"
-            onClick={() =>
-              setIsEdit({
-                status: true,
-                data: row.row.original,
-              })
-            }
-          >
-            <BiEdit />
-          </ActionIcon>
-          */}
+          {/* Uncomment the below code if you want to enable editing */}
+          {isAdmin && (
+            <ActionIcon
+              variant="transparent"
+              color="black"
+              onClick={() =>
+                setIsEdit({
+                  status: true,
+                  data: row.row.original,
+                })
+              }
+            >
+              <BiEdit />
+            </ActionIcon>
+          )}
+          {/* Uncomment the below code if you want to enable deleting */}
+          {isAdmin && (
+            <ActionIcon
+              variant="transparent"
+              color="red"
+              onClick={() => {
+                setShowDelete({
+                  status: true,
+                  data: row.row.original,
+                });
+              }}
+            >
+              <BiTrashAlt />
+            </ActionIcon>
+          )}
         </div>
       ),
     },
@@ -97,7 +135,7 @@ const ReferenceNumbers = () => {
           radius={"md"}
           className=" duration-300"
         >
-          + Add Reference Number
+          + Book Reference Number
         </Button>
       }
     >
@@ -124,7 +162,7 @@ const ReferenceNumbers = () => {
         )}
         {!loading && !error && (
           <DataTable
-            searchKey="name"
+            searchKey="title"
             columns={columns}
             data={referenceNumbers}
           />
@@ -147,6 +185,8 @@ const ReferenceNumbers = () => {
       >
         <AddUpdateReferenceNumber
           refetch={get}
+          referenceNumber={isEdit.data}
+          isEdit={isEdit.status}
           onClose={() => {
             setShowDrawer(false);
             setIsEdit({ status: false, data: null });
@@ -170,6 +210,53 @@ const ReferenceNumbers = () => {
       >
         <ViewReferenceNumber referenceNumber={viewReferenceNumber.data} />
       </Drawer>
+      {/* delete modal */}
+      <MainModal
+        isOpen={showDelete.status}
+        onClose={() =>
+          setShowDelete({
+            status: false,
+            data: null,
+          })
+        }
+        title="Delete Reference Number"
+        // className="w-full md:w-1/2"
+      >
+        <div className="flex flex-col gap-y-3">
+          <p className="text-sm">
+            Are you sure you want to delete this reference number?
+          </p>
+          <div className="flex w-full gap-x-3">
+            <Button
+              onClick={() =>
+                setShowDelete({
+                  status: false,
+                  data: null,
+                })
+              }
+              variant="outline"
+              color="gray"
+              className="flex-1"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={async () => {
+                await deleteData(showDelete.data?.id as string);
+                get();
+                setShowDelete({
+                  status: false,
+                  data: null,
+                });
+              }}
+              loading={loadingDelete}
+              className="flex-1"
+            >
+              Delete
+            </Button>
+          </div>
+        </div>
+      </MainModal>
     </DashboardLayout>
   );
 };

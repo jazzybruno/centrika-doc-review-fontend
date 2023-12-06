@@ -1,11 +1,12 @@
-import { ApiResponse } from '@/types/base.type';
-import { AuthAPi, getResError } from '@/utils/fetcher';
-import { notifications } from '@mantine/notifications';
-import { useEffect, useState } from 'react';
+import { ApiResponse } from "@/types/base.type";
+import { AuthAPi, getResError } from "@/utils/fetcher";
+import { notifications } from "@mantine/notifications";
+import { useEffect, useState } from "react";
 
 interface Opts {
   onMount?: boolean;
   defaultData?: any;
+  customError?: string;
 }
 
 export default function useDelete<T = any>(url: string, _options?: Opts) {
@@ -16,26 +17,26 @@ export default function useDelete<T = any>(url: string, _options?: Opts) {
     setLoading(true);
     setError(null);
     if (!id) {
-      console.log('useDelete error', 'id is required');
-      setError('id is required');
+      console.log("useDelete error", "id is required");
+      setError("id is required");
       return;
     }
     try {
       const response = await AuthAPi.delete<ApiResponse<T>>(`${url}/${id}`);
       console.log(response);
       notifications.show({
-        title: 'Success',
+        title: "Success",
         message: response.data?.message,
-        color: 'blue',
+        color: "blue",
         autoClose: 3000,
       });
     } catch (error: any) {
-      const err = getResError(error);
-      console.log('useDelete error', err);
+      const err = _options?.customError ?? getResError(error);
+      console.log("useDelete error", err);
       notifications.show({
-        title: 'Failed to delete data',
+        title: "Failed to delete data",
         message: err,
-        color: 'red',
+        color: "red",
         autoClose: 3000,
       });
       setError(err.toString());

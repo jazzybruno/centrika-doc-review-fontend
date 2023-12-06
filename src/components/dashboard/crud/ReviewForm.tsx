@@ -1,13 +1,13 @@
 import AsyncSelect from "@/components/core/AsyncSelect";
 import { useAuth } from "@/contexts/AuthProvider";
-import { IDocumentReview } from "@/types/base.type";
+import { IDocument } from "@/types/base.type";
 import { AuthAPi, getResError } from "@/utils/fetcher";
 import { Button, Input, Select, Textarea } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import React, { FC } from "react";
 
 interface Props {
-  document: IDocumentReview | null;
+  document: IDocument | null;
   onClose?: () => void;
 }
 
@@ -71,7 +71,7 @@ const ReviewForm: FC<Props> = ({ document, onClose }) => {
       <Select
         data={[
           { label: "Approve", value: "APPROVE" },
-          { label: "Reject", value: "REJECT" },
+          { label: "Return", value: "RETURN" },
           { label: "Forward", value: "FORWARD" },
         ]}
         value={review.status}

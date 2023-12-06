@@ -44,9 +44,9 @@ const Departments = () => {
     },
     {
       header: "Created By",
-      accessorKey: "createdByUser",
+      accessorKey: "createdBy",
       cell: (row: any) => (
-        <h6 className="">{row.getValue("createdByUser").username}</h6>
+        <h6 className="">{row.getValue("createdBy").username}</h6>
       ),
     },
     {

@@ -1,5 +1,6 @@
 import AsyncSelect from "@/components/core/AsyncSelect";
-import { IDepartment, IDocument } from "@/types/base.type";
+import useGet from "@/hooks/useGet";
+import { DepartmentHead, IDepartment, IDocument } from "@/types/base.type";
 import { IUser } from "@/types/user.type";
 import { AuthAPi, getResError } from "@/utils/fetcher";
 import { Avatar, Button, Divider, Input } from "@mantine/core";
@@ -11,15 +12,22 @@ import { Link } from "react-router-dom";
 
 interface Props {
   department: IDepartment | null;
+  onClose: () => void;
 }
 
 const ViewDepartment: FC<Props> = ({ department }) => {
   const [activeDocuments, setActiveDocuments] = React.useState<IDocument[]>([]);
   const [usersInDepartment, setUsersInDepartment] = React.useState<IUser[]>([]);
-  const [departmentHead, setDepartmentHead] = React.useState<IUser | null>(null);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState(null);
   const [deptHead, setDeptHead] = React.useState("");
+  const [viewHead, setViewHead] = React.useState<boolean>(false);
+  const { data: currDeptHead, get: getDeptHead } = useGet<DepartmentHead>(
+    `/department-heads/department/${department?.id}`,
+    {
+      defaultData: null,
+    }
+  );
 
   const getActiveDocuments = async () => {
     setLoading(true);
@@ -47,25 +55,41 @@ const ViewDepartment: FC<Props> = ({ department }) => {
     setLoading(false);
   };
 
-  const getDepartmentHead = async () => {
+  const updateDepartmentHead = async () => {
     setLoading(true);
     try {
-      const res = await AuthAPi.get(`/users/id/${department?.departmentHead}`);
+      const res = await AuthAPi.put(`/department-heads/${currDeptHead?.id}`, {
+        userId: deptHead,
+        departmentId: department?.id,
+      });
       console.log(res);
-      setDepartmentHead(res.data?.data);
+      // setActiveDocuments(res.data?.data?.slice(0, 4));
+      notifications.show({
+        title: "Department Head Updated",
+        message: "Department Head Updated Successfully",
+        color: "green",
+      });
+      getDeptHead();
+      setViewHead(false);
     } catch (error) {
       console.log(error);
       setError(getResError(error));
+      notifications.show({
+        title: "Department Head Failed",
+        message: getResError(error),
+        color: "red",
+      });
     }
     setLoading(false);
-  }
+  };
 
   const addDepartmentHead = async () => {
     setLoading(true);
     try {
-      const res = await AuthAPi.put(
-        `/department/add-head/${department?.id}/${deptHead}`
-      );
+      const res = await AuthAPi.post(`/department-heads/create`, {
+        userId: deptHead,
+        departmentId: department?.id,
+      });
       console.log(res);
       // setActiveDocuments(res.data?.data?.slice(0, 4));
       notifications.show({
@@ -73,6 +97,8 @@ const ViewDepartment: FC<Props> = ({ department }) => {
         message: "Department Head Added Successfully",
         color: "green",
       });
+      getDeptHead();
+      setViewHead(false);
     } catch (error) {
       console.log(error);
       setError(getResError(error));
@@ -88,7 +114,6 @@ const ViewDepartment: FC<Props> = ({ department }) => {
   React.useEffect(() => {
     getActiveDocuments();
     getUsersInDepartment();
-    getDepartmentHead();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
@@ -149,78 +174,83 @@ const ViewDepartment: FC<Props> = ({ department }) => {
             {i !== usersInDepartment.length - 1 && <Divider />}
           </>
         ))}
-        {/* <Avatar.Group>
-          <Avatar
-            src={`https://ui-avatars.com/api/?name=${usersInDepartment[0].username}+${usersInDepartment[0].email}&bold=true`}
-          />
-          <Avatar
-            src={`https://ui-avatars.com/api/?name=${usersInDepartment[0].username}+${usersInDepartment[0].email}&bold=true`}
-          />
-          <Avatar
-            src={`https://ui-avatars.com/api/?name=${usersInDepartment[0].username}+${usersInDepartment[0].email}&bold=true`}
-          />
-          <Avatar>+5</Avatar>
-        </Avatar.Group> */}
       </div>
       <Divider my={"md"} />
       <div className="flex w-full gap-y-3 flex-col ">
         <div className="flex items-center justify-between text-sm font-semibold">
           <p>Department Head</p>
         </div>
-        {departmentHead ? (
+        <div className="flex justify-between">
+          {!currDeptHead && <p>No Department Head</p>}
+          <Button
+            onClick={() => setViewHead(!viewHead)}
+            size="xs"
+            radius="sm"
+            variant="outline"
+            color="blue"
+          >
+            {viewHead ? "Close" : currDeptHead ? "Update Head" : "Add A Head"}
+          </Button>
+        </div>
+        {currDeptHead && (
           <div className="flex w-full items-center gap-x-2">
             <Avatar
-              src={`https://ui-avatars.com/api/?name=${departmentHead.username}+${departmentHead.email}&bold=true`}
+              src={`https://ui-avatars.com/api/?name=${currDeptHead?.userId.username}+${currDeptHead?.userId.email}&bold=true`}
               size={"md"}
             />
             <div className="flex flex-col">
               <p className="text-sm font-semibold">
-                {departmentHead.username}
+                {currDeptHead?.userId.username}
               </p>
               <p className="text-xs text-primary">
-                {departmentHead.email}
+                {currDeptHead?.userId.email}
               </p>
             </div>
           </div>
-        ) : (
-          <p>No Department Head</p>
         )}
-        <h1 className=" text-sm font-semibold">Change Department Head</h1>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            addDepartmentHead();
-          }}
-          className="flex gap-y-3 border p-2 rounded-md flex-col w-full"
-        >
-          <Input.Wrapper w={"100%"} label="Department Head">
-            <AsyncSelect
-              selectDataUrl={
-                department?.id
-                  ? `/users/department/${department?.id}`
-                  : `/users/all`
-              }
-              labelKey="username"
-              onChange={(val) => {
-                console.log(val);
-                if (!val) return;
-                setDeptHead(val);
+        {viewHead && (
+          <>
+            <h1 className=" text-sm font-semibold">
+              {currDeptHead ? "Change" : "Add"} Department Head
+            </h1>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (currDeptHead) updateDepartmentHead();
+                else addDepartmentHead();
               }}
-            />
-          </Input.Wrapper>
-          <Button
-            type="submit"
-            loading={loading}
-            disabled={loading}
-            radius="md"
-            w={"100%"}
-            size="md"
-            mt={8}
-            className=" w-full bg-primary text-white"
-          >
-            Submit
-          </Button>
-        </form>
+              className="flex gap-y-3 border p-2 rounded-md flex-col w-full"
+            >
+              <Input.Wrapper w={"100%"} label="Department Head">
+                <AsyncSelect
+                  selectDataUrl={
+                    department?.id
+                      ? `/users/department/${department?.id}`
+                      : `/users/all`
+                  }
+                  labelKey="username"
+                  onChange={(val) => {
+                    console.log(val);
+                    if (!val) return;
+                    setDeptHead(val);
+                  }}
+                />
+              </Input.Wrapper>
+              <Button
+                type="submit"
+                loading={loading}
+                disabled={loading}
+                radius="md"
+                w={"100%"}
+                size="md"
+                mt={8}
+                className=" w-full bg-primary text-white"
+              >
+                Submit
+              </Button>
+            </form>
+          </>
+        )}
       </div>
       <div className="flex text-sm flex-col gap-y-2">
         <p>Issued On</p>

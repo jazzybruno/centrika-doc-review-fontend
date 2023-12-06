@@ -10,6 +10,7 @@
     "preview": "vite preview --port=\"9080\""
   },
   "dependencies": {
+    "@cyntler/react-doc-viewer": "^1.14.1",
     "@mantine/core": "^7.1.7",
     "@mantine/dropzone": "^7.1.7",
     "@mantine/hooks": "^7.1.7",
