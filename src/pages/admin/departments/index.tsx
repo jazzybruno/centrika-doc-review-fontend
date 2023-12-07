@@ -156,7 +156,15 @@ const Departments = () => {
         position="right"
         title={<span className=" font-semibold"> {"Department Overview"}</span>}
       >
-        <ViewDepartment department={viewDepartment.data} />
+        <ViewDepartment
+          department={viewDepartment.data}
+          onClose={() => {
+            setViewDepartment({
+              open: false,
+              data: null as any,
+            });
+          }}
+        />
       </Drawer>
     </DashboardLayout>
   );

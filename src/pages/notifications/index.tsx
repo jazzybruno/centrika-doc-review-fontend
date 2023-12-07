@@ -131,6 +131,18 @@ const NotificationPage = () => {
                     >
                       {item.read ? "Read" : "Mark as Read"}
                     </button>
+                    {/* <Button
+                      variant="transparent"
+                      p={0}
+                      onClick={
+                        item.read
+                          ? () => {}
+                          : () => readNotification(item.notId)
+                      }
+                      className="text-sm text-primary"
+                    >
+                      {item.read ? "Read" : "Mark as Read"}
+                    </Button> */}
                     <ActionIcon
                       onClick={() => deleteNotification(item.notId)}
                       variant="transparent"
