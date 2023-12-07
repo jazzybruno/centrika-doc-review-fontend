@@ -10,7 +10,7 @@ interface Props {
 }
 
 const PreviewDoc = ({ doc }: Props) => {
-  //   const fileExt = doc?.fileUrl?.split(".").pop();
+  const fileExt = doc?.fileUrl?.split(".").pop();
   return (
     <div className="flex w-full h-full">
       <DocViewer
