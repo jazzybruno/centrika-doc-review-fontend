@@ -31,14 +31,20 @@ const Users = () => {
   });
   const { deleteData, loading: deleteLoading } = useDelete("/users/delete");
   const { user } = useAuth();
+
+  const isAdmin = user?.roles.some((r) => r.roleName === "ADMIN");
+  const isDeptHead = user?.roles.some((r) => r.roleName === "DEPARTMENT_HEAD");
   const {
     data: users,
     loading,
     error,
     get,
-  } = useGet<IUser[]>("/users/all", {
-    defaultData: [],
-  });
+  } = useGet<IUser[]>(
+    isDeptHead ? `/users/department/${user?.department?.id}` : "/users/all",
+    {
+      defaultData: [],
+    }
+  );
   // remove current user from users
   const filteredUsers = users?.filter((u) => u.id !== user?.id);
 
@@ -114,14 +120,18 @@ const Users = () => {
   return (
     <DashboardLayout
       right={
-        <Button
-          size="md"
-          onClick={() => setShowDrawer(true)}
-          radius={"md"}
-          className=" duration-300"
-        >
-          + Add User
-        </Button>
+        isAdmin ? (
+          <Button
+            size="md"
+            onClick={() => setShowDrawer(true)}
+            radius={"md"}
+            className=" duration-300"
+          >
+            + Add User
+          </Button>
+        ) : (
+          <span>Users in {user?.department.name} </span>
+        )
       }
     >
       <div className="flex w-full flex-col p-3">
@@ -145,7 +155,15 @@ const Users = () => {
             </Button>
           </div>
         )}
-        {!loading && !error && <DataTable searchKey="username" columns={columns} data={filteredUsers} />}
+        {!loading && !error && (
+          <DataTable
+            searchKey="username"
+            columns={columns}
+            data={filteredUsers?.filter(
+              (u) => u.department?.id === user?.department?.id
+            )}
+          />
+        )}
       </div>
       <Drawer
         opened={showDrawer || isEdit.status}

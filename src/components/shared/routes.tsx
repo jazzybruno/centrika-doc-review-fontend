@@ -11,11 +11,6 @@ interface Route {
 }
 
 export const AdminRoutes: Route[] = [
-  // {
-  //   icon: <LayoutGridIcon />,
-  //   name: "Dashboard",
-  //   path: "/dashboard",
-  // },
   {
     icon: <FaUsers size={20} />,
     name: "Users",
@@ -57,5 +52,24 @@ export const UserRoutes = [
     name: "Documents",
     path: "/user/documents",
   },
+  ...AdminRoutes.filter((route) => route.isPublic),
+];
+
+export const deptHeadRoutes = [
+  {
+    icon: <FaUsers size={20} />,
+    name: "Users",
+    path: "/users",
+  },
+  {
+    icon: <FaFile />,
+    name: "Documents",
+    path: "/user/documents",
+  },
+  // {
+  //   icon: <MenuSquareIcon className="w-5" />,
+  //   name: "Department",
+  //   path: "/departments",
+  // },
   ...AdminRoutes.filter((route) => route.isPublic),
 ];

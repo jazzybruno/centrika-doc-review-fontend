@@ -57,6 +57,8 @@ const Documents = () => {
   } = useGet<IDocument[]>(
     reqType === "mine"
       ? `/documents/requested-by-me/${user?.id}`
+      : reqType === "dept"
+      ? `/documents/by-department/${user?.department.id}`
       : `/documents/requested-to-me/${user?.id}`,
     {
       defaultData: [],
@@ -170,7 +172,7 @@ const Documents = () => {
   ];
 
   useEffect(() => {
-    if (reqType === "mine" || reqType === "to-me") {
+    if (reqType === "mine" || reqType === "to-me" || reqType === "dept") {
       setFilteredList(revDoc);
       return;
     }
@@ -223,6 +225,7 @@ const Documents = () => {
               { value: "none", label: "None" },
               { value: "mine", label: "Mine" },
               { value: "to-me", label: "To Me" },
+              { value: "dept", label: "My Department" },
             ]}
             onChange={(val) => {
               setReqType(val);
@@ -232,7 +235,7 @@ const Documents = () => {
         </div>
       </div>
       <div className="flex w-full flex-col p-3">
-        {loading && <TableSkeleton columns={columns} />}
+        {loading || (loadingRevDoc && <TableSkeleton columns={columns} />)}
         {error && (
           <div className="flex flex-col items-center w-full">
             <span className="flex items-center justify-center text-red-700 text-sm">
@@ -252,7 +255,7 @@ const Documents = () => {
             </Button>
           </div>
         )}
-        {!loading && !error && (
+        {!loading && !loadingRevDoc && !error && (
           <DataTable
             searchKey="name"
             columns={columns}

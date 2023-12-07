@@ -15,8 +15,11 @@ import NotificationPage from "./pages/notifications";
 import ReferenceNumbers from "./pages/reference";
 import UserDocuments from "./pages/user/documents";
 import ViewDocumentPdf from "./pages/view-document";
+import { useAuth } from "./contexts/AuthProvider";
 
 function App() {
+  const { user } = useAuth();
+
   const AuthRoute = () => {
     const token = sessionStorage.getItem("token");
     if (token) {
@@ -27,8 +30,13 @@ function App() {
 
   const AdminRoute = () => {
     const token = sessionStorage.getItem("token");
-    const user = JSON.parse(sessionStorage.getItem("user") || "{}");
-    if (token && user?.roles[0].roleName === "ADMIN") {
+    if (
+      token &&
+      user?.roles.some(
+        (role) =>
+          role.roleName === "ADMIN" || role.roleName === "DEPARTMENT_HEAD"
+      )
+    ) {
       return <Outlet />;
     }
     return <Navigate to="/" />;
