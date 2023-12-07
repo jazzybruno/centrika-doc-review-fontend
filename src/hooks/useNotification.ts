@@ -13,7 +13,7 @@ export default function useNotification() {
     setLoading(true);
     setError(null);
     try {
-      const res = await AuthAPi.get(`/notifications/user/${user?.id}`);
+      const res = await AuthAPi.get(`/notifications/by-receiver/${user?.id}`);
       const data = await res.data;
       console.log("getNotifications", data);
       setNotifications(data.data);
@@ -43,7 +43,7 @@ export default function useNotification() {
     setError(null);
     try {
       const res = await AuthAPi.put(
-        `/notifications/user/mark-as-read/all/${user?.id}`
+        `/notifications/mark-all-as-read/${user?.id}`
       );
       const data = await res.data;
       console.log("markAllAsRead", data);

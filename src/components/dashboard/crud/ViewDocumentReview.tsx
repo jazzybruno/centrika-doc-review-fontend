@@ -23,6 +23,9 @@ import Reviewers from "./Reviewers";
 import DocReviews from "./DocReviews";
 import { DocReviewAction, Reviewer } from "@/types/doc.type";
 import PreviewDoc from "./PreviewDoc";
+import { getStatusColor } from "@/utils/funcs";
+import Predecessors from "./Predecessors";
+import Successors from "./Successors";
 
 interface Props {
   document: IDocument | null;
@@ -59,7 +62,16 @@ const ViewDocumentReview: FC<Props> = ({
       <div className="flex z-10 bg-white h-full">
         <PreviewDoc doc={doc} />
         <div className="flex w-full max-w-lg bg-slate-50 px-4 flex-col overflow-y-auto gap-y-3 pt-2">
-          <div className="flex ml-auto">
+          <div className="flex justify-between">
+            <a
+              target="_blank"
+              href={`${baseUrl}/documents/download/${doc?.fileUrl}`}
+              download={`${doc?.title ?? "document"}`}
+              className=" p-2 h-fit rounded-3xl disabled:opacity-50 hover:bg-gray-200 duration-300 text-sm font-semibold flex items-center gap-x-2 bg-gray-100 text-primary"
+            >
+              <AiOutlineCloudDownload />
+              Download
+            </a>
             <Button onClick={onClose} variant="outline" color="blue">
               Close
             </Button>
@@ -185,36 +197,52 @@ const ViewDocumentReview: FC<Props> = ({
                 {docReviewActions?.length === 0 && !loadingActions && (
                   <span className="text-sm">No reviews Actions yet</span>
                 )}
-                {docReviewActions?.map((action) => (
-                  <div className="flex items-center relative">
-                    <Avatar
-                      src={`https://ui-avatars.com/api/?name=${action.reviewer?.user?.username}`}
-                      size="lg"
-                      radius="xl"
-                    />
-                    <div
-                      key={action.id}
-                      className="flex flex-col bg-foreground p-2 rounded-md"
-                    >
-                      <p className="text-sm font-semibold">
-                        {action.reviewer?.user?.username}
-                      </p>
-                      <p className="text-sm ">{action.comment.content}</p>
-                      <p className="text-sm opacity-70">
-                        {moment(action?.comment.createdAt).fromNow()}
-                      </p>
+                {docReviewActions?.map((action, i) => (
+                  <>
+                    <div className="flex items-start relative">
+                      <Avatar
+                        src={`https://ui-avatars.com/api/?name=${action.reviewer?.user?.username}`}
+                        size=""
+                        className="mt-2"
+                        radius="xl"
+                      />
+                      <div
+                        key={action.id}
+                        className="flex flex-col bg-foreground p-2 rounded-md"
+                      >
+                        <p className="text-sm font-semibold">
+                          {action.reviewer?.user?.username}
+                        </p>
+                        <p className="text-sm ">{action.comment.content}</p>
+                        <p className="text-sm opacity-70">
+                          {moment(action?.comment.createdAt).fromNow()}
+                        </p>
+                      </div>
+                      <Badge
+                        color={getStatusColor(action.action)}
+                        variant="filled"
+                        className="absolute top-0 right-0"
+                      >
+                        {action.action}
+                      </Badge>
                     </div>
-                    {/* <Badge
-                      color={
-                        action.reviewer.status === "REVIEWED" ? "blue" : "gray"
-                      }
-                      variant="filled"
-                      className="absolute top-0 right-0"
-                    >
-                      {action.reviewer.status}
-                    </Badge> */}
-                  </div>
+                    {docReviewActions?.length - 1 !== i && (
+                      <Divider my={"sm"} />
+                    )}
+                  </>
                 ))}
+              </Accordion.Panel>
+            </Accordion.Item>
+            <Accordion.Item value="Predecessors">
+              <Accordion.Control>Predecessors</Accordion.Control>
+              <Accordion.Panel>
+                <Predecessors doc={doc} />
+              </Accordion.Panel>
+            </Accordion.Item>
+            <Accordion.Item value="Successors">
+              <Accordion.Control>Successors</Accordion.Control>
+              <Accordion.Panel>
+                <Successors doc={doc} />
               </Accordion.Panel>
             </Accordion.Item>
           </Accordion>

@@ -162,7 +162,7 @@ const AddUpdateDocument: FC<Props> = ({
             }
             value={data.description}
             required
-            placeholder="Email"
+            placeholder="Description"
             p={2}
             variant="filled"
             size="md"
