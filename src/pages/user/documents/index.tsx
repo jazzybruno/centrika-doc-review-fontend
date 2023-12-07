@@ -14,6 +14,7 @@ import {
   Drawer,
   Overlay,
   SegmentedControl,
+  Select,
   Tooltip,
 } from "@mantine/core";
 import { ColumnDef } from "@tanstack/react-table";
@@ -24,7 +25,7 @@ import { BiEdit, BiSolidMessageSquareDetail, BiTrash } from "react-icons/bi";
 
 const Documents = () => {
   const [showDrawer, setShowDrawer] = React.useState(false);
-  const [reqType, setReqType] = React.useState("mine");
+  const [reqType, setReqType] = React.useState<string | null>(null);
   const [docType, setDocType] = React.useState("internal");
   const [isReviewing, setIsReviewing] = React.useState({
     opened: false,
@@ -46,30 +47,47 @@ const Documents = () => {
     error,
   } = useGet<IDocument[]>("/documents", {
     defaultData: [],
-    onMount: false,
+    // onMount: false,
   });
+  const {
+    data: revDoc,
+    get: getRevDoc,
+    loading: loadingRevDoc,
+    error: errorRevDoc,
+  } = useGet<IDocument[]>(
+    reqType === "mine"
+      ? `/documents/requested-by-me/${user?.id}`
+      : reqType === "dept"
+      ? `/documents/by-department/${user?.department.id}`
+      : `/documents/requested-to-me/${user?.id}`,
+    {
+      defaultData: [],
+      onMount: false,
+    }
+  );
   const [filteredList, setFilteredList] = React.useState(documents);
 
-  useEffect(() => {
-    //
-  }, [reqType]);
-
   const columns: ColumnDef<IDocument>[] = [
-    // {
-    //   header: "File Name",
-    //   accessorKey: "name",
-    //   cell: ({ row }) => {
-    //     const currentDocument = row.original.reviewDocList.find(
-    //       (doc_) => doc_.id === row.original.currentDocument
-    //     );
-    //     return <h6 className="">{currentDocument?.title}</h6>;
-    //   },
-    // },
+    {
+      header: "Title",
+      accessorKey: "title",
+      cell: ({ row }) => {
+        return <h6 className="">{row.original?.title}</h6>;
+      },
+    },
     {
       header: "File Url",
       cell: ({ row }) => {
         return <h6 className="">{row.original?.fileUrl}</h6>;
       },
+    },
+    {
+      header: "Creator",
+      cell: ({ row }) => (
+        <h6 className=" whitespace-nowrap">
+          {row.original?.createdBy?.username}
+        </h6>
+      ),
     },
     {
       header: "Date Created",
@@ -154,11 +172,25 @@ const Documents = () => {
   ];
 
   useEffect(() => {
+    if (reqType === "mine" || reqType === "to-me" || reqType === "dept") {
+      setFilteredList(revDoc);
+      return;
+    }
+    if (docType === "All") {
+      setFilteredList(documents);
+      return;
+    }
     const newDocuments = documents?.filter(
       (doc) => doc.category === docType.toUpperCase()
     );
     if (newDocuments) setFilteredList(newDocuments);
-  }, [docType, documents]);
+  }, [docType, documents, reqType, revDoc]);
+
+  // reqType
+  useEffect(() => {
+    getRevDoc();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reqType]);
 
   return (
     <DashboardLayout
@@ -173,32 +205,37 @@ const Documents = () => {
         </Button>
       }
     >
-      <div className="flex w-full justify-between">
+      <div className="flex w-full mt-2 justify-between">
         <div className="flex flex-col gap-y-1">
           <h1 className=" px-2 text-sm font-medium">By Category</h1>
           <SegmentedControl
             w={300}
             onChange={(value) => setDocType(value)}
             data={[
+              { value: "All", label: "All" },
               { value: "internal", label: "INTERNAL" },
               { value: "external", label: "EXTERNAL" },
             ]}
           />
         </div>
-        <div className="flex flex-col gap-y-1">
+        <div className="flex flex-col gap-y-1 px-3">
           <h1 className=" px-2 text-sm font-medium">By Review</h1>
-          <SegmentedControl
-            w={300}
-            onChange={(value) => setReqType(value)}
+          <Select
             data={[
-              { value: "requested", label: "Requested" },
-              { value: "to-me", label: "Requested to Me" },
+              { value: "none", label: "None" },
+              { value: "mine", label: "Mine" },
+              { value: "to-me", label: "To Me" },
+              { value: "dept", label: "My Department" },
             ]}
+            onChange={(val) => {
+              setReqType(val);
+            }}
+            placeholder="Select Action"
           />
         </div>
       </div>
       <div className="flex w-full flex-col p-3">
-        {loading && <TableSkeleton columns={columns} />}
+        {loading || (loadingRevDoc && <TableSkeleton columns={columns} />)}
         {error && (
           <div className="flex flex-col items-center w-full">
             <span className="flex items-center justify-center text-red-700 text-sm">
@@ -218,7 +255,7 @@ const Documents = () => {
             </Button>
           </div>
         )}
-        {!loading && !error && (
+        {!loading && !loadingRevDoc && !error && (
           <DataTable
             searchKey="name"
             columns={columns}
@@ -261,7 +298,7 @@ const Documents = () => {
       {(viewDoc.opened || isReviewing.opened) && (
         <ViewDocumentReview
           document={viewDoc.data ?? isReviewing.data}
-          isReviewing={isReviewing.opened}
+          isReviewing={reqType === "to-me"}
           refresh={get}
           onClose={() => {
             setViewDoc({

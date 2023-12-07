@@ -1,48 +1,50 @@
 import AsyncSelect from "@/components/core/AsyncSelect";
 import { useAuth } from "@/contexts/AuthProvider";
-import { IDocument } from "@/types/base.type";
+import { DocumentReview, Reviewer } from "@/types/doc.type";
 import { AuthAPi, getResError } from "@/utils/fetcher";
 import { Button, Input, Select, Textarea } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import React, { FC } from "react";
 
 interface Props {
-  document: IDocument | null;
+  docReview: DocumentReview | null;
   onClose?: () => void;
+  reviewer: Reviewer | null;
 }
 
-const ReviewForm: FC<Props> = ({ document, onClose }) => {
+const ReviewForm: FC<Props> = ({ docReview, onClose, reviewer }) => {
   const { user } = useAuth();
-  const defaultData = {
-    status: "",
-    commentContent: "",
+  console.log("docReview", docReview);
+  console.log("reviewer", reviewer);
+  const [review, setReview] = React.useState({
+    action: "",
+    comment: "",
     newReviewerId: "",
-    reviewDocId: document?.id ?? "",
-    reviewer: user?.id ?? "",
-  };
-  const [review, setReview] = React.useState(defaultData);
+    documentReviewId: docReview?.id ?? "",
+    reviewer: reviewer?.id ?? "",
+  });
   const [deptId, setDeptId] = React.useState("");
   const [loading, setLoading] = React.useState(false);
 
   const sendReview = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    const isForward = review.status === "FORWARD";
+    const isForward = review.action === "FORWARD";
     try {
       const response = await AuthAPi.post(
-        `/document-reviews/doc/${isForward ? "forward" : "review"}`,
-        isForward
+        `/${isForward ? "document-reviews/forward" : "review-actions/create"}`,
+        !isForward
           ? {
-              newReviewerId: review.newReviewerId,
-              reviewDocId: review.reviewDocId,
-              reviewer: review.reviewer,
-              commentContent: review.commentContent,
+              reviewerId: reviewer?.id,
+              comment: review.comment,
+              action: review.action,
+              documentReviewId: review.documentReviewId,
             }
           : {
-              reviewDocId: review.reviewDocId,
-              status: review.status,
-              reviewer: review.reviewer,
-              commentContent: review.commentContent,
+              newReviewerId: review.newReviewerId,
+              reviewDocId: review.documentReviewId,
+              reviewer: reviewer?.id,
+              commentContent: review.comment,
             }
       );
       console.log(response.data);
@@ -74,16 +76,16 @@ const ReviewForm: FC<Props> = ({ document, onClose }) => {
           { label: "Return", value: "RETURN" },
           { label: "Forward", value: "FORWARD" },
         ]}
-        value={review.status}
+        value={review.action}
         onChange={(value) => {
           if (!value) return;
-          setReview({ ...review, status: value });
+          setReview({ ...review, action: value });
         }}
         placeholder="Select Action"
         required
         className="w-full"
       />
-      {review.status === "FORWARD" && (
+      {review.action === "FORWARD" && (
         <>
           <Input.Wrapper w={"100%"} label="Department" description="Department">
             <AsyncSelect
@@ -113,9 +115,9 @@ const ReviewForm: FC<Props> = ({ document, onClose }) => {
       )}
       <Textarea
         onChange={(e) =>
-          setReview((prev) => ({ ...prev, commentContent: e.target.value }))
+          setReview((prev) => ({ ...prev, comment: e.target.value }))
         }
-        value={review.commentContent}
+        value={review.comment}
         required
         placeholder="Review Comment"
         p={2}
@@ -132,7 +134,7 @@ const ReviewForm: FC<Props> = ({ document, onClose }) => {
         mt={8}
         className=" w-full capitalize bg-primary text-white"
       >
-        Perform Action ({review.status})
+        Perform Action ({review.action})
       </Button>
     </form>
   );

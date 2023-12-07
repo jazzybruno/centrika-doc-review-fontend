@@ -4,7 +4,7 @@ import { ActionIcon, Avatar, Badge } from "@mantine/core";
 import { LogOutIcon, MenuIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { AdminRoutes, UserRoutes } from "./routes";
+import { AdminRoutes, UserRoutes, deptHeadRoutes } from "./routes";
 import { useApp } from "@/contexts/AppProvider";
 
 const Sidebar = () => {
@@ -38,7 +38,11 @@ const Sidebar = () => {
     window.location.href = "/";
   };
 
-  const routes = user?.roles[0].roleName === "ADMIN" ? AdminRoutes : UserRoutes;
+  const routes = user?.roles.some((role) => role.roleName === "ADMIN")
+    ? AdminRoutes
+    : user?.roles.some((role) => role.roleName === "DEPARTMENT_HEAD")
+    ? deptHeadRoutes
+    : UserRoutes;
 
   return (
     <>

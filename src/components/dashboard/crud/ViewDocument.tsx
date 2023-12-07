@@ -22,12 +22,9 @@ const ViewDocument: FC<Props> = ({ document: doc }) => {
   const downloadDocument = async () => {
     setLoadingDownload(true);
     try {
-      const res = await AuthAPi.get(
-        `/documents/download/${doc?.fileUrl}`,
-        {
-          // responseType: "blob",
-        }
-      );
+      const res = await AuthAPi.get(`/documents/download/${doc?.fileUrl}`, {
+        // responseType: "blob",
+      });
       console.log(res);
       const url = window.URL.createObjectURL(new Blob([res.data]));
       const link = document?.createElement("a");
@@ -49,9 +46,7 @@ const ViewDocument: FC<Props> = ({ document: doc }) => {
             <AiFillFilePdf size={25} className="text-red-500 " />
           </button>
           <div className="flex flex-col">
-            <p className="text-sm font-semibold">
-              {doc?.title}
-            </p>
+            <p className="text-sm font-semibold">{doc?.title}</p>
             <p className="text-xs text-primary">{doc?.status}</p>
             <p className="text-sm opacity-80">By {doc?.createdBy.username}</p>
           </div>
@@ -83,9 +78,7 @@ const ViewDocument: FC<Props> = ({ document: doc }) => {
         <h1 className=" font-semibold">Department Info</h1>
         <div className="flex flex-col gap-y-2">
           <p className="text-sm font-semibold">{doc?.department?.name}</p>
-          <p className="text-sm opacity-80">
-            {doc?.department.description}
-          </p>
+          <p className="text-sm opacity-80">{doc?.department.description}</p>
         </div>
       </div>
     </div>

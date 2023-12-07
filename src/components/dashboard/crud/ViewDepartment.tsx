@@ -157,7 +157,6 @@ const ViewDepartment: FC<Props> = ({ department }) => {
           </Link>
         </div>
         {loading && <p>Loading...</p>}
-        {/* {error && <p>{error}</p>} */}
         {usersInDepartment.length === 0 && <p>No Users</p>}
         {usersInDepartment.map((user, i) => (
           <>
