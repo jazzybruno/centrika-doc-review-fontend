@@ -1,10 +1,15 @@
 import AsyncSelect from "@/components/core/AsyncSelect";
 import UploadArea from "@/components/core/UploadArea";
 import { useAuth } from "@/contexts/AuthProvider";
-import { IDocument, IDocumentReview } from "@/types/base.type";
+import { ERelated, IDocument, IDocumentReview } from "@/types/base.type";
 import { AuthAPi, getResError } from "@/utils/fetcher";
 import { Button, Input, Select, Switch, Textarea } from "@mantine/core";
-import { PDF_MIME_TYPE } from "@mantine/dropzone";
+import {
+  PDF_MIME_TYPE,
+  MS_EXCEL_MIME_TYPE,
+  MS_POWERPOINT_MIME_TYPE,
+  MS_WORD_MIME_TYPE,
+} from "@mantine/dropzone";
 import { notifications } from "@mantine/notifications";
 import React, { FC } from "react";
 
@@ -36,7 +41,7 @@ const AddUpdateDocument: FC<Props> = ({
   const [file, setFile] = React.useState<File | null>(null);
   const [error, setError] = React.useState<any>(null);
   const [loading, setLoading] = React.useState(false);
-  const [hsPrevDoc, setHsPrevDoc] = React.useState(false);
+  const [hasPrevDoc, setHasPrevDoc] = React.useState(false);
 
   const handleFileChange = (files: File[]) => {
     console.log(files);
@@ -58,9 +63,13 @@ const AddUpdateDocument: FC<Props> = ({
     formData.append("category", data.category);
     // formData.append("departmentId", data?.departmentId);
     formData.append("creator", data.creator);
-    formData.append("relationshipType", data.relationshipType);
+    formData.append("relationType", data.relationshipType);
     formData.append("referenceNumberId", data.referenceNumberId);
     formData.append("parentDocumentId", data.parentDocumentId);
+    formData.append(
+      "isRelated",
+      hasPrevDoc ? ERelated.RELATED : ERelated.NOT_RELATED
+    );
 
     try {
       const response = isEdit
@@ -109,7 +118,12 @@ const AddUpdateDocument: FC<Props> = ({
     >
       <UploadArea
         onDrop={handleFileChange}
-        accept={PDF_MIME_TYPE}
+        accept={{
+          PDF_MIME_TYPE,
+          MS_WORD_MIME_TYPE,
+          MS_POWERPOINT_MIME_TYPE,
+          MS_EXCEL_MIME_TYPE,
+        }}
         className=" h-32 flex items-center w-full justify-center bg-foreground"
       >
         {file ? (
@@ -186,11 +200,11 @@ const AddUpdateDocument: FC<Props> = ({
         <div className="flex justify-between items-center">
           <span>Does it have a previous document?</span>
           <Switch
-            checked={hsPrevDoc}
-            onChange={() => setHsPrevDoc((prev) => !prev)}
+            checked={hasPrevDoc}
+            onChange={() => setHasPrevDoc((prev) => !prev)}
           />
         </div>
-        {hsPrevDoc && (
+        {hasPrevDoc && (
           <>
             <Input.Wrapper
               label="Relationship"

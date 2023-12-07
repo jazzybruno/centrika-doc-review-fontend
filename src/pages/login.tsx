@@ -110,12 +110,12 @@ export default function Login() {
                 <div className="absolute right-3 bottom-4">
                   {!showPassword ? (
                     <AiFillEyeInvisible
-                      className="text-black-primary text-xl"
+                      className="text-black-primary cursor-pointer text-xl"
                       onClick={() => setShowPassword(!showPassword)}
                     />
                   ) : (
                     <AiFillEye
-                      className="text-black-primary text-xl"
+                      className="text-black-primary cursor-pointer text-xl"
                       onClick={() => setShowPassword(!showPassword)}
                     />
                   )}

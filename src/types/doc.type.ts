@@ -1,8 +1,24 @@
-// export interface Root {
-//     id: string
-//     createdAt: number
-//     status: string
-//     reviewers: Reviewer[]
-//     reviewDoc: ReviewDoc
-//     comments: any[]
-//   }
+import { IComment, IDepartment, IDocument, IModel } from "./base.type";
+import { IUser } from "./user.type";
+
+export interface Reviewer extends IModel {
+  user: IUser;
+  documentReview: DocumentReview;
+  status: "PENDING" | "REVIEWED";
+}
+
+export interface DocumentReview extends IModel {
+  document: IDocument;
+  department: IDepartment;
+  sendingDepartment: IDepartment;
+  createdBy: IUser;
+  expectedCompleteTime: Date | string;
+  deadline: Date | string;
+}
+
+export interface DocReviewAction extends IModel {
+  action: "FORWARD" | "RETURN" | "APPROVE";
+  documentReview: DocumentReview;
+  reviewer: Reviewer;
+  comment: IComment;
+}

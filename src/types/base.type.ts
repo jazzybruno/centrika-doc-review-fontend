@@ -100,3 +100,8 @@ export interface DepartmentHead extends IModel {
   userId: IUser;
   departmentId: IDepartment;
 }
+
+export enum ERelated {
+  RELATED = "RELATED",
+  NOT_RELATED = "NOT_RELATED",
+}
