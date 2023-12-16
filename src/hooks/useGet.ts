@@ -48,7 +48,6 @@ export default function useGet<T = any>(url: string, options?: Opts) {
         title: "Failed to get data",
         message: err,
         color: "red",
-        autoClose: 3000,
       });
       setError(err.toString());
     } finally {
@@ -77,7 +76,6 @@ export default function useGet<T = any>(url: string, options?: Opts) {
         title: "Failed to get data",
         message: err,
         color: "red",
-        autoClose: 3000,
       });
       setError(err.toString());
     } finally {

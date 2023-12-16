@@ -41,7 +41,6 @@ const AddUpdateUser: FC<Props> = ({ refetch, onClose, isEdit, user }) => {
           title: "Add User Success",
           message: "Add User Success",
           color: "green",
-          autoClose: 3000,
         });
       }
       refetch();
@@ -52,7 +51,6 @@ const AddUpdateUser: FC<Props> = ({ refetch, onClose, isEdit, user }) => {
         title: "Add User Failed",
         message: getResError(error),
         color: "red",
-        autoClose: 3000,
       });
     }
     setLoading(false);
