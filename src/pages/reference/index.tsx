@@ -76,15 +76,15 @@ const ReferenceNumbers = () => {
         <h6 className="">{row.getValue("referenceNumber")}</h6>
       ),
     },
-    {
-      header: "Created At",
-      accessorKey: "createdAt",
-      cell: ({ row }) => (
-        <h6 className="">
-          {new Date(row.getValue("createdAt")).toUTCString()}
-        </h6>
-      ),
-    },
+    // {
+    //   header: "Created At",
+    //   accessorKey: "createdAt",
+    //   cell: ({ row }) => (
+    //     <h6 className="">
+    //       {new Date(row.getValue("createdAt")).toUTCString()}
+    //     </h6>
+    //   ),
+    // },
     {
       header: "Actions",
       accessorKey: "class",

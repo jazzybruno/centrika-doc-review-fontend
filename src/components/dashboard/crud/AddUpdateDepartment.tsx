@@ -82,7 +82,7 @@ const AddUpdateDepartment: FC<Props> = ({ refetch, onClose }) => {
               setData((prev) => ({ ...prev, description: e.target.value }))
             }
             required
-            placeholder="Email"
+            placeholder="Description"
             p={2}
             variant="filled"
             size="md"

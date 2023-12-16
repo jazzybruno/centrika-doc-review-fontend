@@ -66,6 +66,8 @@ export interface IDocument extends IModel {
   referenceNumber: IReferenceNumber;
   createdBy: IUser;
   department: IDepartment;
+  hasPredecessors: boolean;
+  hasSuccessors: boolean;
 }
 export interface IDocumentReview extends IModel {
   status: "PENDING" | "APPROVED" | "REJECTED";

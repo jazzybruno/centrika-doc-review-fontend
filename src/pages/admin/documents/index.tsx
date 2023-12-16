@@ -24,7 +24,7 @@ const Documents = () => {
     get,
     loading,
     error,
-  } = useGet<IDocument[]>("/document", {
+  } = useGet<IDocument[]>("/documents", {
     defaultData: [],
   });
 
@@ -53,7 +53,9 @@ const Documents = () => {
     },
     {
       header: "department",
-      cell: ({ row }) => <h6 className="">{row.original.department.name}</h6>,
+      cell: ({ row }) => (
+        <h6 className="">{row.original.createdBy?.department?.name}</h6>
+      ),
     },
     {
       header: "Actions",

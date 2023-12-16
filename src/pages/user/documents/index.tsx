@@ -45,7 +45,7 @@ const Documents = () => {
     get,
     loading,
     error,
-  } = useGet<IDocument[]>("/documents", {
+  } = useGet<IDocument[]>(`/documents/by-user/${user?.id}`, {
     defaultData: [],
     // onMount: false,
   });

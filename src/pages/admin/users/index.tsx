@@ -159,9 +159,13 @@ const Users = () => {
           <DataTable
             searchKey="username"
             columns={columns}
-            data={filteredUsers?.filter(
-              (u) => u.department?.id === user?.department?.id
-            )}
+            data={
+              isDeptHead
+                ? filteredUsers?.filter(
+                    (u) => u.department?.id === user?.department?.id
+                  )
+                : filteredUsers
+            }
           />
         )}
       </div>
