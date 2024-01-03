@@ -192,6 +192,16 @@ const Documents = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reqType]);
 
+  const reqTypeData = [
+    { value: "none", label: "None" },
+    { value: "mine", label: "Mine" },
+    { value: "to-me", label: "To Me" },
+  ];
+  const depTypeData = [
+    ...reqTypeData,
+    { value: "dept", label: "My Department" },
+  ];
+  const isDeptHead = user?.roles.some((r) => r.roleName === "DEPARTMENT_HEAD");
   return (
     <DashboardLayout
       right={
@@ -221,12 +231,7 @@ const Documents = () => {
         <div className="flex flex-col gap-y-1 px-3">
           <h1 className=" px-2 text-sm font-medium">By Review</h1>
           <Select
-            data={[
-              { value: "none", label: "None" },
-              { value: "mine", label: "Mine" },
-              { value: "to-me", label: "To Me" },
-              { value: "dept", label: "My Department" },
-            ]}
+            data={isDeptHead ? depTypeData : reqTypeData}
             onChange={(val) => {
               setReqType(val);
             }}
