@@ -37,10 +37,12 @@ export default function Login() {
         window.location.href = nextUrl;
       }
     } catch (error) {
-      console.log(error);
+      console.log(getResError(error));
+      const _err = getResError(error);
       notifications.show({
         title: "Login Failed",
-        message: getResError(error),
+        message:
+          _err.trim() !== "" ? _err : "The Email or password is incorrec",
         color: "red",
         autoClose: 3000,
       });

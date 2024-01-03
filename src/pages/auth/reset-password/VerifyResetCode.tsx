@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { notifications } from "@mantine/notifications";
-import { Button, Input } from "@mantine/core";
+import { Button, Input, PasswordInput } from "@mantine/core";
 import AuthLayout from "@/layouts/AuthLayout";
 import { api, getResError } from "@/utils/fetcher";
 import MainModal from "@/components/core/MainModal";
@@ -19,6 +19,7 @@ const VerifyCode = () => {
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { code } = useParams();
 
@@ -30,8 +31,9 @@ const VerifyCode = () => {
       setError("Passwords do not match");
       return;
     }
+    setLoading(true);
     try {
-      const res = await api.put("/auth/reset-password", {
+      const res = await api.post("/auth/reset-password", {
         email: email,
         newPassword: data.password,
       });
@@ -51,6 +53,7 @@ const VerifyCode = () => {
       });
       console.log(error);
     }
+    setLoading(false);
   };
 
   return (
@@ -63,7 +66,7 @@ const VerifyCode = () => {
           Enter your new password and confirm it to reset your password
         </span>
         <Input.Wrapper label="Password" required>
-          <Input
+          <PasswordInput
             type="password"
             error={error}
             onChange={(e) => setData({ ...data, password: e.target.value })}
@@ -71,7 +74,7 @@ const VerifyCode = () => {
           />
         </Input.Wrapper>
         <Input.Wrapper label="Confirm Password" required>
-          <Input
+          <PasswordInput
             type="password"
             error={error}
             onChange={(e) =>
@@ -80,7 +83,13 @@ const VerifyCode = () => {
             autoComplete="new-password"
           />
         </Input.Wrapper>
-        <Button type="submit" className="" size="lg">
+        <Button
+          loading={loading}
+          disabled={loading}
+          type="submit"
+          className=""
+          size="lg"
+        >
           Submit
         </Button>
       </form>
@@ -106,7 +115,7 @@ const VerifyCode = () => {
             <Link
               to="/auth/login"
               // onClick={handleNext}
-              className="bg-mainPurple hover:bg-purple-950 mt-4 duration-300 text-white rounded-[4em] w-fit px-8 py-3 mx-auto"
+              className="bg-primary hover:bg-blue-800 mt-4 duration-300 text-white rounded-[4em] w-fit px-8 py-3 mx-auto"
             >
               Go To Login
             </Link>
