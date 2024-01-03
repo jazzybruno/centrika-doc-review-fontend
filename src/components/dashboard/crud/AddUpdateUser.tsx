@@ -15,13 +15,9 @@ interface Props {
 
 const AddUpdateUser: FC<Props> = ({ refetch, onClose, isEdit, user }) => {
   const [data, setData] = React.useState({
-    username: user?.username ?? "",
-    phoneNumber: user?.phoneNumber ?? "",
     email: user?.email ?? "",
-    gender: user?.gender ?? "",
-    // registrationCode: "",
-    password: "",
-    departmentId: user?.department?.id ?? "",
+    username: user?.username ?? "",
+    deptId: user?.department?.id ?? "",
   });
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<any>(null);
@@ -29,7 +25,7 @@ const AddUpdateUser: FC<Props> = ({ refetch, onClose, isEdit, user }) => {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    if (Object.values(data).some((val) => !val.trim())) {
+    if (data.email.trim() === "" || data.deptId.trim() === "") {
       setError("Please fill all required fields");
       return;
     }
@@ -61,13 +57,13 @@ const AddUpdateUser: FC<Props> = ({ refetch, onClose, isEdit, user }) => {
       onSubmit={onSubmit}
       className=" w-full flex-col flex gap-y-4 py-4 items-center"
     >
-      <input type="file" id="photo" hidden />
+      {/* <input type="file" id="photo" hidden />
       <label
         htmlFor="photo"
         className=" cursor-pointer w-32 aspect-square bg-foreground rounded-full flex justify-center items-center"
       >
         <BsFillCameraFill size={25} />
-      </label>
+      </label> */}
       {error && (
         <div className="text-red-500 text-sm font-semibold">{error}</div>
       )}
@@ -87,22 +83,6 @@ const AddUpdateUser: FC<Props> = ({ refetch, onClose, isEdit, user }) => {
             size="md"
           />
         </Input.Wrapper>
-        <Input.Wrapper
-          w={"100%"}
-          label="Phone Number"
-          description="Phone Number"
-        >
-          <Input
-            onChange={(e) => setData({ ...data, phoneNumber: e.target.value })}
-            required
-            value={data.phoneNumber}
-            type="tel"
-            placeholder="Phone Number"
-            p={2}
-            variant="filled"
-            size="md"
-          />
-        </Input.Wrapper>
         <Input.Wrapper w={"100%"} label="Your Email" description="Email">
           <Input
             type="email"
@@ -115,37 +95,14 @@ const AddUpdateUser: FC<Props> = ({ refetch, onClose, isEdit, user }) => {
             size="md"
           />
         </Input.Wrapper>
-        <Input.Wrapper w={"100%"} label="Password" description="Password">
-          <Input
-            type="password"
-            onChange={(e) => setData({ ...data, password: e.target.value })}
-            value={data.password}
-            required
-            placeholder="Password"
-            p={2}
-            variant="filled"
-            size="md"
-          />
-        </Input.Wrapper>
-        <Input.Wrapper w={"100%"} label="Your Gender" description="Gender">
-          <Select
-            mt={6}
-            defaultValue={data.gender}
-            data={["MALE", "FEMALE"]}
-            onChange={(val) => {
-              if (!val) return;
-              setData({ ...data, gender: val });
-            }}
-          />
-        </Input.Wrapper>
         <Input.Wrapper w={"100%"} label="Department" description="Department">
           <AsyncSelect
             selectDataUrl="/department/all"
-            value={data.departmentId}
+            value={data.deptId}
             onChange={(val) => {
               console.log(val);
               if (!val) return;
-              setData({ ...data, departmentId: val });
+              setData({ ...data, deptId: val });
             }}
           />
         </Input.Wrapper>
