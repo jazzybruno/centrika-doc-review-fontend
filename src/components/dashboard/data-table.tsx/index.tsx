@@ -117,6 +117,7 @@ export function DataTable({
     debugTable: true,
     onPaginationChange: setPagination,
     manualPagination: paginationProps?.isPaginated,
+    enableGlobalFilter: true,
     // pageCount: pageCount ?? ,
     // paginateExpandedRows: true,
   });
@@ -143,13 +144,9 @@ export function DataTable({
           ) : searchKey ? (
             <Input
               type="text"
-              placeholder={`Search ${searchKey}...`}
-              value={
-                (table?.getColumn(searchKey)?.getFilterValue() as string) ?? ""
-              }
-              onChange={(event) =>
-                table?.getColumn(searchKey)?.setFilterValue(event.target.value)
-              }
+              placeholder={`Search...`}
+              value={table?.getState().globalFilter ?? ""}
+              onChange={(event) => table?.setGlobalFilter(event.target.value)}
               className="lg:max-w-xs max-w-[16em] w-full rounded-md duration-300"
             />
           ) : null}
@@ -160,7 +157,10 @@ export function DataTable({
         <table style={{ minWidth: minW ?? 700 }} className=" w-full ">
           <thead className=" text-mainPurple">
             {table.getHeaderGroups().map((headerGroup, i) => (
-              <tr className=" bg-transparent h-20" key={`${headerGroup.id} ${i}`}>
+              <tr
+                className=" bg-transparent h-20"
+                key={`${headerGroup.id} ${i}`}
+              >
                 {headerGroup.headers.map((header, i) => {
                   return (
                     <td

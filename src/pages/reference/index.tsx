@@ -10,6 +10,7 @@ import DashboardLayout from "@/layouts/DashboardLayout";
 import { IReferenceNumber } from "@/types/base.type";
 import { ActionIcon, Button, Drawer } from "@mantine/core";
 import { ColumnDef } from "@tanstack/react-table";
+import moment from "moment";
 import React from "react";
 import { AiOutlineReload } from "react-icons/ai";
 import { BiEdit, BiTrashAlt } from "react-icons/bi";
@@ -75,6 +76,15 @@ const ReferenceNumbers = () => {
         <h6 className="">{row.getValue("referenceNumber")}</h6>
       ),
     },
+    // {
+    //   header: "Created At",
+    //   accessorKey: "createdAt",
+    //   cell: ({ row }) => (
+    //     <h6 className="">
+    //       {new Date(row.getValue("createdAt")).toUTCString()}
+    //     </h6>
+    //   ),
+    // },
     {
       header: "Actions",
       accessorKey: "class",
@@ -162,7 +172,7 @@ const ReferenceNumbers = () => {
         )}
         {!loading && !error && (
           <DataTable
-            searchKey="title"
+            searchKey="..."
             columns={columns}
             data={referenceNumbers}
           />

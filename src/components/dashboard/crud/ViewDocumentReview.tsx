@@ -234,13 +234,27 @@ const ViewDocumentReview: FC<Props> = ({
               </Accordion.Panel>
             </Accordion.Item>
             <Accordion.Item value="Predecessors">
-              <Accordion.Control>Predecessors</Accordion.Control>
+              <Accordion.Control>
+                Predecessors{" "}
+                {doc?.hasPredecessors ? (
+                  <Badge color="green">Available</Badge>
+                ) : (
+                  <Badge color="red">N/A</Badge>
+                )}
+              </Accordion.Control>
               <Accordion.Panel>
                 <Predecessors doc={doc} />
               </Accordion.Panel>
             </Accordion.Item>
             <Accordion.Item value="Successors">
-              <Accordion.Control>Successors</Accordion.Control>
+              <Accordion.Control>
+                Successors{" "}
+                {doc?.hasSuccessors ? (
+                  <Badge color="green">Available</Badge>
+                ) : (
+                  <Badge color="red">N/A</Badge>
+                )}
+              </Accordion.Control>
               <Accordion.Panel>
                 <Successors doc={doc} />
               </Accordion.Panel>

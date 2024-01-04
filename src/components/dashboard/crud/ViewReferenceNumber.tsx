@@ -46,6 +46,11 @@ const ViewReferenceNumber: FC<Props> = ({ referenceNumber }) => {
             </div>
           </div>
         </div>
+        <Divider my={"md"} />
+        <div className="flex gap-y-2 flex-col">
+          <p className=" font-semibold">Created At</p>
+          <h2>{new Date(referenceNumber?.createdAt ?? "").toUTCString()}</h2>
+        </div>
       </div>
     </div>
   );

@@ -77,9 +77,16 @@ const ViewDocument: FC<Props> = ({ document: doc }) => {
       <div className="flex w-full flex-col gap-y-3">
         <h1 className=" font-semibold">Department Info</h1>
         <div className="flex flex-col gap-y-2">
-          <p className="text-sm font-semibold">{doc?.department?.name}</p>
-          <p className="text-sm opacity-80">{doc?.department.description}</p>
+          <p className="text-sm font-semibold">
+            {doc?.createdBy?.department?.name}
+          </p>
+          <p className="text-sm opacity-80">
+            {doc?.createdBy?.department?.description}
+          </p>
         </div>
+        <p className="text-sm opacity-80">
+          Created At {new Date(doc?.createdAt ?? "").toUTCString()}
+        </p>
       </div>
     </div>
   );

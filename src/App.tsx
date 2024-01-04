@@ -5,17 +5,22 @@ import {
   Route,
   Routes,
 } from "react-router-dom";
+import { useAuth } from "./contexts/AuthProvider";
 import AccountIndex from "./pages/account";
 import DashboardIndex from "./pages/admin/dashboard";
 import Departments from "./pages/admin/departments";
 import Documents from "./pages/admin/documents";
 import Users from "./pages/admin/users";
-import Login from "./pages/login";
+import AcceptInvitation from "./pages/auth/AcceptInvitation";
+import VerifyEmail from "./pages/auth/VerifyEmail";
+import Login from "./pages/auth/login";
+import ResetPassword from "./pages/auth/reset-password/ResetPassword";
+import VerifyResetCode from "./pages/auth/reset-password/VerifyResetCode";
 import NotificationPage from "./pages/notifications";
+import FillProfile from "./pages/on-boarding/FillProfile";
 import ReferenceNumbers from "./pages/reference";
 import UserDocuments from "./pages/user/documents";
 import ViewDocumentPdf from "./pages/view-document";
-import { useAuth } from "./contexts/AuthProvider";
 
 function App() {
   const { user } = useAuth();
@@ -46,6 +51,17 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/auth/login" element={<Login />} />
+        <Route path="/auth/forgot-password" element={<ResetPassword />} />
+        <Route
+          path="/auth/reset-password/:code"
+          element={<VerifyResetCode />}
+        />
+        <Route path="/auth/verify-email" element={<VerifyEmail />} />
+        <Route path="/auth/accept-invitation" element={<AcceptInvitation />} />
+        {/*<Route path="/on-boarding/set-up-password" element={<SetupPassword />} />*/}
+        {/* <Route path="/on-boarding/set-up-profile" element={<SetupProfile />} /> */}
+        <Route path="/on-boarding/fill-profile" element={<FillProfile />} />
         <Route element={<AdminRoute />}>
           <Route path="/dashboard" element={<DashboardIndex />} />
           <Route path="/users" element={<Users />} />

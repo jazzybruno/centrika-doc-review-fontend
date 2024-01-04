@@ -39,7 +39,6 @@ const AddUpdateReferenceNumber: FC<Props> = ({
         title: "Add Reference Number Failed",
         message: "Please fill all required fields",
         color: "red",
-        autoClose: 3000,
       });
       return;
     }
@@ -53,7 +52,6 @@ const AddUpdateReferenceNumber: FC<Props> = ({
           title: "Add Reference Number Success",
           message: "Add Reference Number Success",
           color: "green",
-          autoClose: 3000,
         });
       }
       refetch();
@@ -64,7 +62,6 @@ const AddUpdateReferenceNumber: FC<Props> = ({
         title: "Add Reference Number Failed",
         message: getResError(error),
         color: "red",
-        autoClose: 3000,
       });
     }
     setLoading(false);
@@ -84,7 +81,6 @@ const AddUpdateReferenceNumber: FC<Props> = ({
             title: "Update Reference Number Status Success",
             message: "Update Reference Number Status Success",
             color: "green",
-            autoClose: 3000,
           });
         }
       }
@@ -98,7 +94,6 @@ const AddUpdateReferenceNumber: FC<Props> = ({
             title: "Update Reference Number Destination Success",
             message: "Update Reference Number Destination Success",
             color: "green",
-            autoClose: 3000,
           });
         }
       }
@@ -110,7 +105,6 @@ const AddUpdateReferenceNumber: FC<Props> = ({
         title: "Update Reference Number Failed",
         message: getResError(error),
         color: "red",
-        autoClose: 3000,
       });
     }
     setLoading(false);

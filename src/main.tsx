@@ -17,7 +17,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <HelmetProvider>
     <AuthProvider>
       <AppProvider>
-        <Notifications position="top-right" />
+        <Notifications position="top-right" autoClose={5000} />
         <App />
       </AppProvider>
     </AuthProvider>

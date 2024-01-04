@@ -1,8 +1,8 @@
 import { Button } from "@mantine/core";
-import illustration from "../assets/images/Illustration.png";
+import illustration from "../../assets/images/Illustration.png";
 import React, { useState } from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { api, getResError } from "@/utils/fetcher";
 import { notifications } from "@mantine/notifications";
 export default function Login() {
@@ -37,10 +37,12 @@ export default function Login() {
         window.location.href = nextUrl;
       }
     } catch (error) {
-      console.log(error);
+      console.log(getResError(error));
+      const _err = getResError(error);
       notifications.show({
         title: "Login Failed",
-        message: getResError(error),
+        message:
+          _err.trim() !== "" ? _err : "The Email or password is incorrec",
         color: "red",
         autoClose: 3000,
       });
@@ -135,9 +137,12 @@ export default function Login() {
                   </label>
                 </div>
                 <div className="">
-                  <a href="#" className="text-sm text-primary">
+                  <Link
+                    to="/auth/forgot-password"
+                    className="text-sm text-primary"
+                  >
                     Reset Password?
-                  </a>
+                  </Link>
                 </div>
               </div>
 
@@ -163,6 +168,12 @@ export default function Login() {
                   </a>{" "}
                 </p>
               </div>
+              <Link
+                to="/on-boarding/fill-profile"
+                className=" text-primary mx-auto hover:text-blue-900 duration-300 text-sm mt-3"
+              >
+                Didn't complete profile?
+              </Link>
             </form>
           </div>
         </div>

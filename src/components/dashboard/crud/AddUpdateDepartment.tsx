@@ -22,7 +22,6 @@ const AddUpdateDepartment: FC<Props> = ({ refetch, onClose }) => {
         title: "Add Department Failed",
         message: "Please fill all required fields",
         color: "red",
-        autoClose: 3000,
       });
       return;
     }
@@ -36,7 +35,6 @@ const AddUpdateDepartment: FC<Props> = ({ refetch, onClose }) => {
           title: "Add Department Success",
           message: "Add Department Success",
           color: "green",
-          autoClose: 3000,
         });
       }
       refetch();
@@ -47,7 +45,6 @@ const AddUpdateDepartment: FC<Props> = ({ refetch, onClose }) => {
         title: "Add Department Failed",
         message: getResError(error),
         color: "red",
-        autoClose: 3000,
       });
     }
     setLoading(false);
@@ -85,7 +82,7 @@ const AddUpdateDepartment: FC<Props> = ({ refetch, onClose }) => {
               setData((prev) => ({ ...prev, description: e.target.value }))
             }
             required
-            placeholder="Email"
+            placeholder="Description"
             p={2}
             variant="filled"
             size="md"

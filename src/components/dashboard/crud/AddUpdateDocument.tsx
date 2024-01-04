@@ -94,7 +94,6 @@ const AddUpdateDocument: FC<Props> = ({
             isEdit ? "Update Document Success" : "Add Document Success"
           }`,
           color: "green",
-          autoClose: 3000,
         });
         refetch();
         onClose();
@@ -105,7 +104,6 @@ const AddUpdateDocument: FC<Props> = ({
         title: "Add Document Failed",
         message: getResError(error),
         color: "red",
-        autoClose: 3000,
       });
     }
     setLoading(false);
