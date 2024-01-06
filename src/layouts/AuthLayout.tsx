@@ -7,7 +7,8 @@ interface AuthLayoutProps {
 const AuthLayout = ({ children }: AuthLayoutProps) => {
   return (
     <div className="flex  w-full gap-5 flex-col h-screen items-center justify-center bg-color-a4">
-      <div className="flex flex-col w-full max-w-lg rounded-xl bg-white mt-4 p-8">
+      <img src="/Logo.png" className="w-22 h-22 object-cover" alt="DMS Logo" />
+      <div className="flex flex-col w-full border max-w-lg rounded-xl bg-white mt-4 p-8">
         {children}
       </div>
     </div>

@@ -148,7 +148,7 @@ const ViewDocumentReview: FC<Props> = ({
                         {creator?.department?.name}
                       </p>
                       <p className="text-sm opacity-80">
-                        {creator?.department.description}
+                        {creator?.department?.description}
                       </p>
                     </div>
                   </div>

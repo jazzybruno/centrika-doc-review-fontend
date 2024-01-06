@@ -2,6 +2,7 @@ import AuthLayout from "@/layouts/AuthLayout";
 import SetupPassword from "@/pages/on-boarding/SetupPassword.tsx";
 import { api, getResError } from "@/utils/fetcher";
 import { Button, Input, Select } from "@mantine/core";
+import { DateInput } from "@mantine/dates";
 import { notifications } from "@mantine/notifications";
 import React, { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
@@ -9,24 +10,26 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 const FillProfile = () => {
   const [data, setData] = useState({
     username: "",
-    employeeId: "",
-    dob: new Date(),
+    dateOfBirth: new Date().toISOString(),
     gender: "",
     phoneNumber: "",
-    nationalId: "",
     email: "",
     password: "",
+    lastName: "",
+    nationalId: "",
+    firstName: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState({
     username: "",
-    employeeId: "",
     gender: "",
     phoneNumber: "",
+    dateOfBirth: "",
     nationalId: "",
-    dob: "",
     email: "",
     password: "",
+    lastName: "",
+    firstName: "",
   });
   const [_error, _setError] = useState("");
   const navigate = useNavigate();
@@ -113,7 +116,7 @@ const FillProfile = () => {
           {!email ? (
             <form
               onSubmit={onEmailSubmit}
-              className=" mt-8 flex flex-col gap-y-6"
+              className=" mt-8 flex flex-col gap-y-3"
             >
               <Input.Wrapper label="Email" required error={error.email}>
                 <Input
@@ -143,7 +146,7 @@ const FillProfile = () => {
               className=" mt-8 flex flex-col gap-y-6"
             >
               {_error && <span className=" text-red-500">{_error}</span>}
-              {/* <div className="flex items-end justify-between">
+              <div className="flex items-end justify-between">
                 <Input.Wrapper error={error.firstName} label="First Name">
                   <Input
                     error={error.firstName}
@@ -162,7 +165,7 @@ const FillProfile = () => {
                     value={data.lastName}
                   />
                 </Input.Wrapper>
-              </div> */}
+              </div>
               <Input.Wrapper error={error.email} label="Email">
                 <Input
                   onChange={(e) =>
@@ -196,6 +199,23 @@ const FillProfile = () => {
                     setData({ ...data, phoneNumber: e.target.value })
                   }
                   value={data.phoneNumber}
+                />
+              </Input.Wrapper>
+              <Input.Wrapper error={error.nationalId} label="National ID">
+                <Input
+                  onChange={(e) =>
+                    setData({ ...data, nationalId: e.target.value })
+                  }
+                  value={data.nationalId}
+                />
+              </Input.Wrapper>
+              <Input.Wrapper error={error.dateOfBirth} label="Date of Birth">
+                <DateInput
+                  placeholder="Date of Birth"
+                  value={new Date(data.dateOfBirth)}
+                  onChange={(val) =>
+                    val && setData({ ...data, dateOfBirth: val.toISOString() })
+                  }
                 />
               </Input.Wrapper>
               <Button
