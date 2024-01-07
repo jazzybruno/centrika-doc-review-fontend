@@ -38,7 +38,12 @@ const AsyncMultiSelect: FC<Props> = ({
   useEffect(() => {
     console.log("data", data);
     setData?.(data ?? []);
-    const _data = [...(dataProp ?? []), ...(data ?? [])];
+
+    // used set to remove duplicates
+    const combData = [...(dataProp ?? []), ...(data ?? [])];
+    const dataSet = new Set(combData.map((item) => JSON.stringify(item)));
+    const _data = Array.from(dataSet).map((item) => JSON.parse(item));
+
     const newData = filterData ? filterData(_data ?? []) : _data;
     const selectData = newData?.map((item) => ({
       value: item[accessorKey ?? "id"]?.toString(),

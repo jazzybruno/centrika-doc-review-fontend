@@ -64,9 +64,17 @@ const DocReviews = ({ doc, onClose, refresh }: Props) => {
   };
 
   useEffect(() => {
-    const revs = users?.filter((d) =>
-      requestData.reviewers.some((r) => r === d.id)
-    );
+    const revs: IUser[] = [];
+    // const revs = users?.filter((d) =>
+    //   requestData.reviewers.some((r) => r === d.id)
+    // );
+    requestData.reviewers.forEach((r) => {
+      const user = users?.find((u) => u.id === r);
+      if (user) revs.push(user);
+    });
+    console.log("revs", revs);
+    console.log("users", users);
+    console.log("requestData.reviewers", requestData?.reviewers);
     if (!revs) return;
     setReviewers(revs);
     if (revs?.length === 1) {
@@ -81,27 +89,29 @@ const DocReviews = ({ doc, onClose, refresh }: Props) => {
     <div className="flex flex-col w-full gap-y-2">
       {documentReviews && documentReviews?.length > 0 && (
         <div className=" overflow-x-auto py-4">
-          <Table className=" text-sm">
-            <thead>
+          <Table align="left" className=" text-sm">
+            <Table.Thead>
               <Table.Tr>
-                <th className="p-2 whitespace-nowrap">Department</th>
-                <th className="p-2 whitespace-nowrap">
+                <Table.Th className="p-2 whitespace-nowrap">
+                  Department
+                </Table.Th>
+                <Table.Th className="p-2 whitespace-nowrap">
                   Expected Completion Time
-                </th>
-                <th className="p-2 whitespace-nowrap">Deadline</th>
+                </Table.Th>
+                <Table.Th className="p-2 whitespace-nowrap">Deadline</Table.Th>
               </Table.Tr>
-            </thead>
+            </Table.Thead>
             {documentReviews?.map((review, i) => (
               <Table.Tr key={review.id}>
-                <td className="p-2 whitespace-nowrap">
+                <Table.Td className="p-2 whitespace-nowrap">
                   {review.sendingDepartment?.name}
-                </td>
-                <td className="p-2 whitespace-nowrap">
+                </Table.Td>
+                <Table.Td className="p-2 whitespace-nowrap">
                   {new Date(review.expectedCompleteTime).toDateString()}
-                </td>
-                <td className="p-2 whitespace-nowrap">
+                </Table.Td>
+                <Table.Td className="p-2 whitespace-nowrap">
                   {new Date(review.deadline).toLocaleString()}
-                </td>
+                </Table.Td>
               </Table.Tr>
             ))}
           </Table>
@@ -174,7 +184,14 @@ const DocReviews = ({ doc, onClose, refresh }: Props) => {
                   setRequestData({ ...requestData, reviewers: val });
                 }}
                 variant="default"
-                setData={setUsers}
+                setData={(data) => {
+                  const newUsers = structuredClone(users ?? []);
+                  data.forEach((d) => {
+                    const userExists = users?.find((u) => u.id === d.id);
+                    if (!userExists) newUsers.push(d);
+                  });
+                  setUsers(newUsers);
+                }}
               />
             </Input.Wrapper>
             <Input.Wrapper
