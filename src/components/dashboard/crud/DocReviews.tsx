@@ -2,13 +2,14 @@ import AsyncMultiSelect from "@/components/core/AsyncMultiSelect";
 import { useAuth } from "@/contexts/AuthProvider";
 import useGet from "@/hooks/useGet";
 import { IDocument } from "@/types/base.type";
-import { Button, Input, Table } from "@mantine/core";
+import { Button, Input, Select, Table } from "@mantine/core";
 import React, { useEffect } from "react";
 import { DateTimePicker } from "@mantine/dates";
 import AsyncSelect from "@/components/core/AsyncSelect";
 import { AuthAPi, getResError } from "@/utils/fetcher";
 import { notifications } from "@mantine/notifications";
 import { DocumentReview, Reviewer } from "@/types/doc.type";
+import { IUser } from "@/types/user.type";
 
 interface Props {
   doc: IDocument | null;
@@ -28,11 +29,14 @@ const DocReviews = ({ doc, onClose, refresh }: Props) => {
     createdBy: user?.id,
     expectedCompleteTime: new Date().toISOString(),
     reviewers: [],
+    whoHasFinalReview: "",
   };
   const [requestData, setRequestData] = React.useState(defaultData);
   const [departmentId, setDepartmentId] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [reviewer, setReviewer] = React.useState<Reviewer | null>(null);
+  const [users, setUsers] = React.useState<IUser[] | null>(null);
+  const [reviewers, setReviewers] = React.useState<IUser[] | null>(null);
 
   const requestReview = async () => {
     console.log(requestData);
@@ -58,6 +62,20 @@ const DocReviews = ({ doc, onClose, refresh }: Props) => {
       });
     }
   };
+
+  useEffect(() => {
+    const revs = users?.filter((d) =>
+      requestData.reviewers.some((r) => r === d.id)
+    );
+    if (!revs) return;
+    setReviewers(revs);
+    if (revs?.length === 1) {
+      setRequestData({ ...requestData, whoHasFinalReview: revs[0].id });
+    } else {
+      setRequestData({ ...requestData, whoHasFinalReview: "" });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [requestData.reviewers, users]);
 
   return (
     <div className="flex flex-col w-full gap-y-2">
@@ -150,6 +168,27 @@ const DocReviews = ({ doc, onClose, refresh }: Props) => {
                   if (!val) return;
                   setRequestData({ ...requestData, reviewers: val });
                 }}
+                variant="default"
+                setData={setUsers}
+              />
+            </Input.Wrapper>
+            <Input.Wrapper
+              w={"100%"}
+              label="Select Main Reviewer"
+              description="Main Reviewer Name"
+            >
+              <Select
+                data={reviewers?.map((d) => ({
+                  value: d.id,
+                  label: d.username,
+                }))}
+                value={requestData.whoHasFinalReview}
+                onChange={(val) => {
+                  console.log(val);
+                  if (!val) return;
+                  setRequestData({ ...requestData, whoHasFinalReview: val });
+                }}
+                nothingFoundMessage="No Reviewers selected"
                 variant="default"
               />
             </Input.Wrapper>
