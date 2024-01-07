@@ -43,7 +43,6 @@ export default function SetupPassword({
       return;
     }
     setLoading(true);
-    setPassword(data.password);
     await onSubmit(e);
     setLoading(false);
   };
@@ -60,7 +59,10 @@ export default function SetupPassword({
         {_error && <span className=" text-red-500">{_error}</span>}
         <Input.Wrapper label="Password" required error={error.password}>
           <PasswordInput
-            onChange={(e) => setData({ ...data, password: e.target.value })}
+            onChange={(e) => {
+              setData({ ...data, password: e.target.value });
+              setPassword(e.target.value);
+            }}
             // label="Password"
             required
             type={showPassword ? "text" : "password"}

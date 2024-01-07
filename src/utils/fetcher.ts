@@ -30,3 +30,20 @@ export const getResError = (error?: any) => {
     "Something Went Wrong"
   );
 };
+//${baseUrl}/documents/download/${doc?.fileUrl}
+// download file by creating a blob url after fetching the file
+export const getFileUrl = (fileUrl: string) => {
+  let url = "";
+  AuthAPi.get(`${baseUrl}/documents/download/${fileUrl}`, {
+    responseType: "blob",
+  })
+    .then((response) => {
+      url = window.URL.createObjectURL(new Blob([response.data]));
+      console.log("url", url);
+      return url;
+    })
+    .catch((err) => {
+      console.log(err);
+      return "";
+    });
+};
