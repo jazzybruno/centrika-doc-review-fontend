@@ -101,6 +101,7 @@ const Reviewers: React.FC<Props> = ({ doc, setReviewers }) => {
               <Badge
                 color={reviewer.status === "PENDING" ? "orange" : "green"}
                 variant="light"
+                className="mt-1"
               >
                 {reviewer.status}
               </Badge>
