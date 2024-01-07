@@ -14,6 +14,7 @@ interface Props {
   variant?: "filled" | "unstyled" | "default";
   filterData?: (data: any[]) => any[];
   setData?: (data: any[]) => void;
+  data?: any[];
 }
 
 const AsyncMultiSelect: FC<Props> = ({
@@ -28,6 +29,7 @@ const AsyncMultiSelect: FC<Props> = ({
   variant,
   filterData,
   setData,
+  data: dataProp,
 }) => {
   const [selected, setSelected] = React.useState<string[]>(value ?? []);
   const { data, loading, get } = useGet<any[]>(datasrc, { defaultData: [] });
@@ -36,7 +38,8 @@ const AsyncMultiSelect: FC<Props> = ({
   useEffect(() => {
     console.log("data", data);
     setData?.(data ?? []);
-    const newData = filterData ? filterData(data ?? []) : data;
+    const _data = [...(dataProp ?? []), ...(data ?? [])];
+    const newData = filterData ? filterData(_data ?? []) : _data;
     const selectData = newData?.map((item) => ({
       value: item[accessorKey ?? "id"]?.toString(),
       label: item[labelKey ?? "name"]?.toString(),
