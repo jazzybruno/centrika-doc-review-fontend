@@ -100,7 +100,7 @@ const DocReviews = ({ doc, onClose, refresh }: Props) => {
                   {new Date(review.expectedCompleteTime).toDateString()}
                 </td>
                 <td className="p-2 whitespace-nowrap">
-                  {new Date(review.deadline).toDateString()}
+                  {new Date(review.deadline).toLocaleString()}
                 </td>
               </Table.Tr>
             ))}

@@ -5,6 +5,7 @@ export interface Reviewer extends IModel {
   user: IUser;
   documentReview: DocumentReview;
   status: "PENDING" | "REVIEWED";
+  hasFinalReview: boolean;
 }
 
 export interface DocumentReview extends IModel {
