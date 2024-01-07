@@ -33,6 +33,8 @@ export const getStatusColor = (status: string) => {
       return "#3A974C";
     case "FORWARD":
       return "orange";
+    case "UPLOADED":
+      return "#605BFF";
     default:
       return "blue";
   }

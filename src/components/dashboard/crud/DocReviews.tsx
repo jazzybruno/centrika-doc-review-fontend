@@ -10,6 +10,7 @@ import { AuthAPi, getResError } from "@/utils/fetcher";
 import { notifications } from "@mantine/notifications";
 import { DocumentReview, Reviewer } from "@/types/doc.type";
 import { IUser } from "@/types/user.type";
+import ChangeDeadline from "./ChangeDeadline";
 
 interface Props {
   doc: IDocument | null;
@@ -19,9 +20,11 @@ interface Props {
 
 const DocReviews = ({ doc, onClose, refresh }: Props) => {
   const { user } = useAuth();
-  const { data: documentReviews, loading: loadingReviews } = useGet<
-    DocumentReview[]
-  >(`/document-reviews/by-document/${doc?.id}`, {
+  const {
+    data: documentReviews,
+    loading: loadingReviews,
+    get,
+  } = useGet<DocumentReview[]>(`/document-reviews/by-document/${doc?.id}`, {
     defaultData: [],
   });
   const defaultData = {
@@ -37,6 +40,10 @@ const DocReviews = ({ doc, onClose, refresh }: Props) => {
   const [reviewer, setReviewer] = React.useState<Reviewer | null>(null);
   const [users, setUsers] = React.useState<IUser[] | null>(null);
   const [reviewers, setReviewers] = React.useState<IUser[] | null>(null);
+  const [showChangeDeadline, setShowChangeDeadline] = React.useState({
+    isOpen: false,
+    data: null as DocumentReview | null,
+  });
 
   const requestReview = async () => {
     console.log(requestData);
@@ -85,6 +92,8 @@ const DocReviews = ({ doc, onClose, refresh }: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [requestData.reviewers, users]);
 
+  const isDeptHead = user?.roles.some((r) => r.roleName === "DEPARTMENT_HEAD");
+  // const isMine =
   return (
     <div className="flex flex-col w-full gap-y-2">
       {documentReviews && documentReviews?.length > 0 && (
@@ -99,6 +108,9 @@ const DocReviews = ({ doc, onClose, refresh }: Props) => {
                   Expected Completion Time
                 </Table.Th>
                 <Table.Th className="p-2 whitespace-nowrap">Deadline</Table.Th>
+                {isDeptHead && (
+                  <Table.Th className="p-2 whitespace-nowrap">Actions</Table.Th>
+                )}
               </Table.Tr>
             </Table.Thead>
             {documentReviews?.map((review, i) => (
@@ -112,6 +124,24 @@ const DocReviews = ({ doc, onClose, refresh }: Props) => {
                 <Table.Td className="p-2 whitespace-nowrap">
                   {new Date(review.deadline).toLocaleString()}
                 </Table.Td>
+                {isDeptHead && (
+                  <Table.Td className="p-2 whitespace-nowrap">
+                    <Button
+                      onClick={() =>
+                        setShowChangeDeadline({
+                          isOpen: true,
+                          data: review,
+                        })
+                      }
+                      size="xs"
+                      radius="sm"
+                      variant="outline"
+                      color="blue"
+                    >
+                      Change Deadline
+                    </Button>
+                  </Table.Td>
+                )}
               </Table.Tr>
             ))}
           </Table>
@@ -141,9 +171,10 @@ const DocReviews = ({ doc, onClose, refresh }: Props) => {
                 if (!value) return;
                 setRequestData({
                   ...requestData,
-                  expectedCompleteTime: value.toISOString(),
+                  expectedCompleteTime: new Date(value).toISOString(),
                 });
               }}
+              minDate={new Date()}
             />
             <Input.Wrapper
               w={"100%"}
@@ -225,6 +256,17 @@ const DocReviews = ({ doc, onClose, refresh }: Props) => {
           </form>
         </>
       )}
+      <ChangeDeadline
+        isOpen={showChangeDeadline.isOpen}
+        onClose={() =>
+          setShowChangeDeadline({
+            isOpen: false,
+            data: null,
+          })
+        }
+        data={showChangeDeadline.data}
+        refresh={get}
+      />
     </div>
   );
 };
