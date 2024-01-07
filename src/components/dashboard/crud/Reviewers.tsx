@@ -1,7 +1,7 @@
 import useGet from "@/hooks/useGet";
 import { IDocument } from "@/types/base.type";
 import { Reviewer } from "@/types/doc.type";
-import { AuthAPi } from "@/utils/fetcher";
+import { AuthAPi, getResError } from "@/utils/fetcher";
 import { ActionIcon, Avatar, Badge, Menu } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import React, { useEffect } from "react";
@@ -48,7 +48,31 @@ const Reviewers: React.FC<Props> = ({ doc, setReviewers }) => {
       console.log(error);
       notifications.show({
         title: "Error",
-        message: "Error reminding reviewer",
+        message: getResError(error),
+        color: "red",
+      });
+    }
+  };
+
+  ///api/document-reviews/change-final-reviewer/{docReviewId}/{newFinalReviewerId}
+  const makeMainReviewer = async (reviewer: Reviewer) => {
+    try {
+      const res = await AuthAPi.patch(
+        `/document-reviews/change-final-reviewer/${reviewer.documentReview.id}/${reviewer.id}`,
+        {}
+      );
+      console.log(res);
+      notifications.show({
+        title: "Success",
+        message: "Main reviewer changed successfully",
+        color: "blue",
+      });
+      await get();
+    } catch (error) {
+      console.log(error);
+      notifications.show({
+        title: "Error",
+        message: getResError(error),
         color: "red",
       });
     }
@@ -96,7 +120,10 @@ const Reviewers: React.FC<Props> = ({ doc, setReviewers }) => {
                     Remind
                   </Menu.Item>
                   {!reviewer.hasFinalReview && (
-                    <Menu.Item leftSection={<FaPerson />}>
+                    <Menu.Item
+                      leftSection={<FaPerson />}
+                      onClick={() => makeMainReviewer(reviewer)}
+                    >
                       Make Main Reviewer
                     </Menu.Item>
                   )}
