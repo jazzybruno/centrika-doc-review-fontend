@@ -100,7 +100,7 @@ const DocReviews = ({ doc, onClose, refresh }: Props) => {
                   {new Date(review.expectedCompleteTime).toDateString()}
                 </td>
                 <td className="p-2 whitespace-nowrap">
-                  {new Date(review.deadline).toDateString()}
+                  {new Date(review.deadline).toLocaleString()}
                 </td>
               </Table.Tr>
             ))}
@@ -163,6 +163,11 @@ const DocReviews = ({ doc, onClose, refresh }: Props) => {
                 }
                 labelKey="username"
                 filterData={(data) => data.filter((d) => d.id !== user?.id)}
+                // value={reviewers?.map((d) => ({
+                //   value: d.id,
+                //   label: d.username,
+                // }))}
+                data={reviewers ?? []}
                 onChange={(val) => {
                   console.log(val);
                   if (!val) return;
