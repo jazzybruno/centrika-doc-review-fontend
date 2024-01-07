@@ -3,7 +3,7 @@ import { api, getResError } from "@/utils/fetcher";
 import React, { useEffect } from "react";
 import { FaCheckCircle } from "react-icons/fa";
 import { Link, useSearchParams } from "react-router-dom";
-import { RiseLoader } from "react-spinners";
+import { ClipLoader, RiseLoader } from "react-spinners";
 
 const VerifyEmail = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -47,10 +47,15 @@ const VerifyEmail = () => {
   }, [code, email]);
 
   return (
-    <div className="w-full flex-col flex items-center">
+    <div className="w-full flex-col flex h-screen items-center justify-center">
       {loading && (
         <div className="flex flex-col justify-center items-center w-full">
-          <RiseLoader color={"#605BFF"} />
+          <img
+            src="/Logo.png"
+            className="w-22 h-22 object-cover"
+            alt="DMS Logo"
+          />
+          <ClipLoader color={"#605BFF"} />
         </div>
       )}
       {error && (
