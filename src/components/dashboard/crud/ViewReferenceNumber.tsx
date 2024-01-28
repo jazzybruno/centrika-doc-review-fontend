@@ -1,6 +1,8 @@
 import { IReferenceNumber } from "@/types/base.type";
 import React, { FC } from "react";
-import { Avatar, Badge, Divider } from "@mantine/core";
+import { Avatar, Badge, Button, Divider } from "@mantine/core";
+import { Link } from "react-router-dom";
+import { BiPlus } from "react-icons/bi";
 
 interface Props {
   referenceNumber: IReferenceNumber | null;
@@ -50,6 +52,21 @@ const ViewReferenceNumber: FC<Props> = ({ referenceNumber }) => {
         <div className="flex gap-y-2 flex-col">
           <p className=" font-semibold">Created At</p>
           <h2>{new Date(referenceNumber?.createdAt ?? "").toUTCString()}</h2>
+        </div>
+        <Divider my={"md"} />
+        <div className="flex gap-y-2 flex-col">
+          <p className=" font-semibold">Actions</p>
+          <Link
+            to={`/user/documents?new=true&category=external&refNo=${referenceNumber?.id}`}
+          >
+            <Button
+              variant="unstyled"
+              leftSection={<BiPlus size={25} />}
+              className=" w-fit flex mr-auto "
+            >
+              New Reference Document
+            </Button>
+          </Link>
         </div>
       </div>
     </div>
