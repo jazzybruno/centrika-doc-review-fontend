@@ -12,19 +12,21 @@ import {
   Badge,
   Button,
   Drawer,
-  Overlay,
   SegmentedControl,
   Select,
-  Tooltip,
 } from "@mantine/core";
 import { ColumnDef } from "@tanstack/react-table";
 import moment from "moment";
 import React, { useEffect } from "react";
 import { AiOutlineEye, AiOutlineReload } from "react-icons/ai";
-import { BiEdit, BiSolidMessageSquareDetail, BiTrash } from "react-icons/bi";
+import { BiEdit } from "react-icons/bi";
+import { useSearchParams } from "react-router-dom";
 
 const Documents = () => {
-  const [showDrawer, setShowDrawer] = React.useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [showDrawer, setShowDrawer] = React.useState(
+    Boolean(searchParams.get("new"))
+  );
   const [reqType, setReqType] = React.useState<string | null>(null);
   const [docType, setDocType] = React.useState("internal");
   const [isReviewing, setIsReviewing] = React.useState({
@@ -140,36 +142,20 @@ const Documents = () => {
               <BiEdit />
             </ActionIcon>
           )}
-          {/* {reqType !== "mine" && (
-            <Tooltip label="Review">
-              <ActionIcon
-                variant="transparent"
-                color="black"
-                onClick={() =>
-                  setIsReviewing({
-                    opened: true,
-                    data: row.row.original,
-                  })
-                }
-              >
-                <BiSolidMessageSquareDetail />
-              </ActionIcon>
-            </Tooltip>
-          )} */}
-          {/* {reqType === "mine" && (
-            <ActionIcon
-              // onClick={() => onDelete(row.original)}
-              variant="transparent"
-              color="red"
-              radius="xl"
-            >
-              <BiTrash />
-            </ActionIcon>
-          )} */}
         </div>
       ),
     },
   ];
+
+  const onCloseDrawer = () => {
+    setShowDrawer(false);
+    setIsEdit({
+      status: false,
+      data: null,
+    });
+    // remove all query params
+    setSearchParams({});
+  };
 
   useEffect(() => {
     if (reqType === "mine" || reqType === "to-me" || reqType === "dept") {
@@ -271,11 +257,7 @@ const Documents = () => {
       <Drawer
         opened={showDrawer || isEdit.status}
         onClose={() => {
-          setShowDrawer(false);
-          setIsEdit({
-            status: false,
-            data: null,
-          });
+          onCloseDrawer();
         }}
         padding="md"
         size="md"
@@ -292,11 +274,7 @@ const Documents = () => {
           isEdit={isEdit.status}
           refetch={get}
           onClose={() => {
-            setShowDrawer(false);
-            setIsEdit({
-              status: false,
-              data: null,
-            });
+            onCloseDrawer();
           }}
         />
       </Drawer>
