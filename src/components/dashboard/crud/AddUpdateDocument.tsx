@@ -12,6 +12,7 @@ import {
 } from "@mantine/dropzone";
 import { notifications } from "@mantine/notifications";
 import React, { FC } from "react";
+import { useSearchParams } from "react-router-dom";
 
 interface Props {
   refetch: () => void;
@@ -27,11 +28,19 @@ const AddUpdateDocument: FC<Props> = ({
   isEdit,
 }) => {
   const { user } = useAuth();
-  const currentDocument = toUpdate;
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentDocument = {
+    ...toUpdate,
+    category:
+      toUpdate?.category ??
+      searchParams.get("category")?.toUpperCase() ??
+      "INTERNAL",
+  };
   const [data, setData] = React.useState({
     title: currentDocument?.title ?? "",
     // reviewer: toUpdate?.reviewers[0]?.id ?? "",
-    referenceNumberId: currentDocument?.referenceNumber?.id ?? "",
+    referenceNumberId:
+      currentDocument?.referenceNumber?.id ?? searchParams.get("refNo") ?? "",
     relationshipType: "",
     parentDocumentId: "",
     category: currentDocument?.category ?? "",
@@ -42,6 +51,8 @@ const AddUpdateDocument: FC<Props> = ({
   const [error, setError] = React.useState<any>(null);
   const [loading, setLoading] = React.useState(false);
   const [hasPrevDoc, setHasPrevDoc] = React.useState(false);
+
+  console.log("data", data);
 
   const handleFileChange = (files: File[]) => {
     console.log(files);
